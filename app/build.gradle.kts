@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.mockk)
+    implementation(libs.mockk.android)
 
     // Hilt
     implementation(libs.hilt.android)
