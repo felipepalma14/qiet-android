@@ -54,6 +54,10 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.kotlinx)
+    implementation(libs.kotlinx.serialization.json)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
