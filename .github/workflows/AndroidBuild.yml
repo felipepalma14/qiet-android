@@ -39,7 +39,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Run unit tests
-        run: ./gradlew unitTests
+        run: ./gradlew testDebugUnitTest
 
       - name: Upload unit tests report
         if: always()
