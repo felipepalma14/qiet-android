@@ -13,7 +13,6 @@ on:
     branches:
       - developer
       - main
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -35,19 +34,26 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
-      - name: Run clean
-        run: ./gradlew clean
+      - name: Build and test with Gradle
+        run: ./gradlew clean generateJacocoCoverageReport
 
-      - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
-
+      # Once our task has finished,
+      # upload the unit tests report as an artifact!
       - name: Upload unit tests report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-            name: unit-tests-report
-            path: build/reports/tests/aggregate
+          name: unit-tests-report
+          path: app/build/reports/tests/aggregate
 
+      # Once our task has finished,
+      # upload JaCoCo's report as an artifact!
+      - name: Upload JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: app/build/reports/jacoco/generateJacocoCoverageReport/html
 
       # Runs a single command using the runners shell
       - name: Build with Gradle
