@@ -97,6 +97,7 @@ android {
             "**/*_Subcomponent*",
             "**/*_Component*",
             "**/theme/**",
+            "**/components/**",
         )
 
         val javaClasses = fileTree("${project.buildDir}/tmp/kotlin-classes/debug") {
@@ -170,6 +171,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.material3)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
@@ -179,6 +181,10 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.kotlinx)
     implementation(libs.kotlinx.serialization.json)
+
+    // Hilt Navigation for Compose
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
 
     // AndroidX & Compose
 
