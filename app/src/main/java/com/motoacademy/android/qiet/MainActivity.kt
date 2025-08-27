@@ -6,8 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
@@ -31,9 +37,23 @@ class MainActivity : ComponentActivity() {
                         .background(Color.White)
                 ) {
                     Scaffold(
+                        floatingActionButton = {
+                            FloatingActionButton(onClick = { }) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "add"
+                                )
+                            }
+                        },
                         modifier = Modifier
-                            .fillMaxSize(),
-                        bottomBar = { BottomNavigationBar(navController = navController) }
+                            .fillMaxSize()
+                            .statusBarsPadding()
+                            .navigationBarsPadding(),
+                        bottomBar = {
+                            BottomNavigationBar(
+                                navController = navController
+                            )
+                        }
                     ) { innerPadding ->
                         NavHostContainer(
                             modifier = Modifier

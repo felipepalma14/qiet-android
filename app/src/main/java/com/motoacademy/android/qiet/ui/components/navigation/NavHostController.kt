@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.motoacademy.android.qiet.features.dashboard.BlockDashboardScreen
 
 @Composable
 fun NavHostContainer(
@@ -18,15 +19,11 @@ fun NavHostContainer(
         modifier = modifier,
         builder = {
             composable<Screen.BlockDashboardScreen> {
-//                HomeScreen(navController, snackbarHostState) {
-//                    navController.navigate(Screen.DetailsScreen(item = it))
-//                }
+                BlockDashboardScreen(navController = navController)
             }
 
             composable<Screen.HistoryScreen> {
-//                FavoritesScreen(navController){
-//                    navController.navigate(Screen.DetailsScreen(item = it))
-//                }
+
             }
         }
     )
