@@ -1,4 +1,4 @@
-package com.motoacademy.android.qiet.ui.create_category
+package com.motoacademy.android.qiet.features.create_category
 
 data class CreateCategoryUiState (
     val categoryName: String = "",
