@@ -17,36 +17,62 @@ class CreateCategoryViewModel @Inject constructor() : ViewModel() {
     private val _categoryColorHex = MutableStateFlow("#FFFFFFFF")
     private val _blockedPrefixes = MutableStateFlow<List<String>>(emptyList())
     private val _blockedContacts = MutableStateFlow<List<String>>(emptyList())
+
+    private val categoryData: StateFlow<CategoryDataState> = combine(
+        _categoryName, _categoryColorHex, _blockedPrefixes, _blockedContacts
+    ) { name, color, prefixes, contacts ->
+        CategoryDataState(
+            name,
+            color,
+            prefixes,
+            contacts)
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        CategoryDataState()
+    )
+
     private val _timeRestrictionsEnabled = MutableStateFlow(false)
     private val _startTime = MutableStateFlow("08:00")
     private val _endTime = MutableStateFlow("22:00")
     private val _weekDays = MutableStateFlow<Set<String>>(emptySet())
 
+    private val timeRestrictions: StateFlow<TimeRestrictionsState> = combine(
+        _timeRestrictionsEnabled, _startTime, _endTime, _weekDays
+    ) { enabled, start, end, days ->
+        TimeRestrictionsState(
+            enabled,
+            start,
+            end,
+            days)
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        TimeRestrictionsState()
+    )
+
+
     private val _isSaving = MutableStateFlow(false)
     private val _error = MutableStateFlow<String?>(null)
+    private val feedback: StateFlow<UiFeedbackState> = combine(
+        _isSaving, _error
+    ) { saving, err ->
+        UiFeedbackState(saving, err)
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        UiFeedbackState()
+    )
 
 
-//    val uiState: StateFlow<CreateCategoryUiState> = combine(
-//        _categoryName, _categoryColorHex, _blockedPrefixes, _blockedContacts,
-//        _timeRestrictionsEnabled, _startTime, _endTime, _weekDays, _isSaving, _error
-//    ) { name, color, prefixes, contacts, restrictionsEnabled, start, end, days, saving, err ->
-//        CreateCategoryUiState(
-//            categoryName = name,
-//            categoryColorHex = color,
-//            blockedPrefixes = prefixes,
-//            blockedContacts = contacts,
-//            timeRestrictionsEnabled = restrictionsEnabled,
-//            startTime = start,
-//            endTime = end,
-//            weekDays = days,
-//            isSaving = saving,
-//            error = err
-//        )
-//    }.stateIn(
-//        scope = viewModelScope,
-//        started = SharingStarted.WhileSubscribed(5000),
-//        initialValue = CreateCategoryUiState()
-//    )
+    val uiState: StateFlow<CreateCategoryUiState> = combine(
+        categoryData, timeRestrictions, feedback
+    ) { category, time, fb ->
+        CreateCategoryUiState(
+            category,
+            time,
+            fb)
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        CreateCategoryUiState()
+    )
 
 
 }
