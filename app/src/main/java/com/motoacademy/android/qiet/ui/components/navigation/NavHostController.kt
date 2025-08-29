@@ -5,7 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.motoacademy.android.qiet.features.dashboard.BlockDashboardScreen
+import com.motoacademy.android.qiet.features.call_history.presentation.CallHistoryScreen
+import com.motoacademy.android.qiet.features.dashboard.presentation.BlockDashboardScreen
 
 @Composable
 fun NavHostContainer(
@@ -23,7 +24,7 @@ fun NavHostContainer(
             }
 
             composable<Screen.HistoryScreen> {
-
+                CallHistoryScreen()
             }
         }
     )
