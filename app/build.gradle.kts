@@ -202,4 +202,11 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Testes com coroutines
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+
+    // Turbine: testar Flows de forma simples
+    testImplementation("app.cash.turbine:turbine:1.1.0")
+
 }
