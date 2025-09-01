@@ -18,7 +18,7 @@ class CreateCategoryViewModel @Inject constructor() : ViewModel() {
     private val _blockedPrefixes = MutableStateFlow<List<String>>(emptyList())
     private val _blockedContacts = MutableStateFlow<List<String>>(emptyList())
 
-    private val categoryData: StateFlow<CategoryDataState> = combine(
+    private val _categoryData: StateFlow<CategoryDataState> = combine(
         _categoryName, _categoryColorHex, _blockedPrefixes, _blockedContacts
     ) { name, color, prefixes, contacts ->
         CategoryDataState(
@@ -36,7 +36,7 @@ class CreateCategoryViewModel @Inject constructor() : ViewModel() {
     private val _endTime = MutableStateFlow("22:00")
     private val _weekDays = MutableStateFlow<Set<String>>(emptySet())
 
-    private val timeRestrictions: StateFlow<TimeRestrictionsState> = combine(
+    private val _timeRestrictions: StateFlow<TimeRestrictionsState> = combine(
         _timeRestrictionsEnabled, _startTime, _endTime, _weekDays
     ) { enabled, start, end, days ->
         TimeRestrictionsState(
@@ -52,7 +52,8 @@ class CreateCategoryViewModel @Inject constructor() : ViewModel() {
 
     private val _isSaving = MutableStateFlow(false)
     private val _error = MutableStateFlow<String?>(null)
-    private val feedback: StateFlow<UiFeedbackState> = combine(
+
+    private val _feedback: StateFlow<UiFeedbackState> = combine(
         _isSaving, _error
     ) { saving, err ->
         UiFeedbackState(saving, err)
@@ -63,7 +64,7 @@ class CreateCategoryViewModel @Inject constructor() : ViewModel() {
 
 
     val uiState: StateFlow<CreateCategoryUiState> = combine(
-        categoryData, timeRestrictions, feedback
+        _categoryData, _timeRestrictions, _feedback
     ) { category, time, fb ->
         CreateCategoryUiState(
             category,
@@ -73,6 +74,5 @@ class CreateCategoryViewModel @Inject constructor() : ViewModel() {
         SharingStarted.WhileSubscribed(5000),
         CreateCategoryUiState()
     )
-
 
 }
