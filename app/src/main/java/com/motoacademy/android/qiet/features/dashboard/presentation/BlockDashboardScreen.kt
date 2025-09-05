@@ -1,4 +1,4 @@
-package com.motoacademy.android.qiet.features.dashboard
+package com.motoacademy.android.qiet.features.dashboard.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +32,27 @@ fun BlockDashboardScreen(
         ),
         BlockRule(
             id = "2",
+            title = "Regra de Bloqueio #2",
+            prefixLabel = "Prefixo(s): 3030, 4040",
+            blockInterval = "Bloqueio: 08:00 - 18:00",
+        ),
+        BlockRule(
+            id = "3",
+            title = "Regra de Bloqueio #2",
+            prefixLabel = "Prefixo(s): 3030, 4040",
+            blockInterval = "Bloqueio: 08:00 - 18:00",
+        ),        BlockRule(
+            id = "4",
+            title = "Regra de Bloqueio #2",
+            prefixLabel = "Prefixo(s): 3030, 4040",
+            blockInterval = "Bloqueio: 08:00 - 18:00",
+        ),        BlockRule(
+            id = "5",
+            title = "Regra de Bloqueio #2",
+            prefixLabel = "Prefixo(s): 3030, 4040",
+            blockInterval = "Bloqueio: 08:00 - 18:00",
+        ),        BlockRule(
+            id = "6",
             title = "Regra de Bloqueio #2",
             prefixLabel = "Prefixo(s): 3030, 4040",
             blockInterval = "Bloqueio: 08:00 - 18:00",

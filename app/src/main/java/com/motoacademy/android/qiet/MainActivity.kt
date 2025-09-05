@@ -19,8 +19,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
-import com.motoacademy.android.qiet.ui.components.navigation.BottomNavigationBar
-import com.motoacademy.android.qiet.ui.components.navigation.NavHostContainer
+import com.motoacademy.android.qiet.navigation.BottomNavigationBar
+import com.motoacademy.android.qiet.navigation.NavHostContainer
+import com.motoacademy.android.qiet.navigation.Screen
 import com.motoacademy.android.qiet.ui.theme.QietTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +39,9 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold(
                         floatingActionButton = {
-                            FloatingActionButton(onClick = { }) {
+                            FloatingActionButton(onClick = {
+                                navController.navigate(Screen.AddCategoryScreen)
+                            }) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = "add"

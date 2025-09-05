@@ -1,5 +1,6 @@
 *.iml
 .gradle
+.kotlin
 # Version control
 vcs.xml
 /local.properties
