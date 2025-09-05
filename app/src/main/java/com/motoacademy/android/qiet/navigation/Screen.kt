@@ -1,4 +1,4 @@
-package com.motoacademy.android.qiet.ui.components.navigation
+package com.motoacademy.android.qiet.navigation
 
 import kotlinx.serialization.Serializable
 
@@ -10,5 +10,8 @@ sealed interface Screen {
 
     @Serializable
     object HistoryScreen: Screen
+
+    @Serializable
+    object AddCategoryScreen: Screen
 
 }

@@ -1,4 +1,4 @@
-package com.motoacademy.android.qiet.ui.components.navigation
+package com.motoacademy.android.qiet.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock

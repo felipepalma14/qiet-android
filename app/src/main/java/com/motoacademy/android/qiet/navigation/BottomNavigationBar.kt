@@ -1,4 +1,4 @@
-package com.motoacademy.android.qiet.ui.components.navigation
+package com.motoacademy.android.qiet.navigation
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
