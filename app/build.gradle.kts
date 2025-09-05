@@ -99,6 +99,7 @@ android {
             "**/*_Component*",
             "**/theme/**",
             "**/components/**",
+            "**/navigation/**"
         )
 
         val javaClasses = fileTree("${project.buildDir}/tmp/kotlin-classes/debug") {
