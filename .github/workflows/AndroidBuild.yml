@@ -34,8 +34,13 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
-      - name: Build and test with Gradle
-        run: ./gradlew clean generateJacocoCoverageReport
+      - name: Run lint
+        run: ./gradlew lintDebug --no-daemon
+        continue-on-error: false
+
+      - name: Run unit tests + jacoco (build & coverage)
+        run: ./gradlew clean check --no-daemon
+        continue-on-error: false
 
       # Once our task has finished,
       # upload the unit tests report as an artifact!
@@ -43,8 +48,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: unit-tests-report
-          path: app/build/reports/tests/aggregate
+          name: unit-test-results
+          path: |
+            **/build/test-results
+            **/build/reports/tests/testDebugUnitTest
 
       # Once our task has finished,
       # upload JaCoCo's report as an artifact!
@@ -53,7 +60,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
-          path: app/build/reports/jacoco/generateJacocoCoverageReport/html
+          path: | 
+            **/build/reports/jacoco/generateJacocoCoverageReport/html
 
       # Runs a single command using the runners shell
       - name: Build with Gradle
@@ -64,3 +72,13 @@ jobs:
         with:
           name: qiet.apk
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload coverage to Codecov
+        if: ${{ secrets.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@v4
+        with:
+          files: |
+              **/build/reports/jacoco/*.xml
+              **/build/reports/jacoco/**/*.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
