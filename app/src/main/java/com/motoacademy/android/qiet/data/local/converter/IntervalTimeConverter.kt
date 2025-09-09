@@ -1,21 +1,22 @@
 package com.motoacademy.android.qiet.data.local.converter
 
-import com.motoacademy.android.qiet.data.local.model.BlockedContact
+import com.motoacademy.android.qiet.data.local.model.IntervalTime
 import androidx.room.TypeConverter
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-class BlockedContactConverter {
+
+class IntervalTimeConverter {
     private val json = Json { ignoreUnknownKeys = true }
 
     @TypeConverter
-    fun fromList(value: List<BlockedContact>?): String {
-        return value?.let { json.encodeToString(it) } ?: "[]"
+    fun fromInterval(value: IntervalTime?): String {
+        return value?.let { json.encodeToString(it) } ?: "{}"
     }
 
     @TypeConverter
-    fun toList(value: String): List<BlockedContact> {
-        return json.decodeFromString(value)
+    fun toInterval(value: String): IntervalTime? {
+        return json.decodeFromString<IntervalTime>(value)
     }
 }

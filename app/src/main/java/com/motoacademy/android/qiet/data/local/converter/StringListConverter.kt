@@ -1,21 +1,20 @@
 package com.motoacademy.android.qiet.data.local.converter
 
-import com.motoacademy.android.qiet.data.local.model.BlockedContact
 import androidx.room.TypeConverter
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 
-class BlockedContactConverter {
+class StringListConverter {
     private val json = Json { ignoreUnknownKeys = true }
 
     @TypeConverter
-    fun fromList(value: List<BlockedContact>?): String {
+    fun fromList(value: List<String>?): String {
         return value?.let { json.encodeToString(it) } ?: "[]"
     }
 
     @TypeConverter
-    fun toList(value: String): List<BlockedContact> {
+    fun toList(value: String): List<String> {
         return json.decodeFromString(value)
     }
 }
+
