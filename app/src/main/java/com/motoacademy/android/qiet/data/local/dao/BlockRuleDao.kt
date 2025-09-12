@@ -4,28 +4,43 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.OnConflictStrategy
+import androidx.room.Update
+import androidx.room.Delete
 import kotlinx.coroutines.flow.Flow
 import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
 
 @Dao
 interface BlockRuleDao {
 
-    //insert
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(rule: BlockRuleEntity): Long //retorna o id da regra adicionada
+    suspend fun insert(rule: BlockRuleEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(rules:List<BlockRuleEntity>): List<Long> //retorna lista de ids das regras
+    @Update
+    suspend fun update(rule: BlockRuleEntity)
 
-    //select
+    @Delete
+    suspend fun delete(rule: BlockRuleEntity)
+
+    @Query("SELECT * FROM block_rule WHERE id = :id")
+    suspend fun getById(id: Long): BlockRuleEntity?
+
     @Query("SELECT * FROM block_rule")
-    fun getAllWithFlow(): Flow<List<BlockRuleEntity>> //pedir explicacao para felipe
-
-    @Query("SELECT * FROM block_rule")
-    suspend fun getAllOnce(): List<BlockRuleEntity>
-
-
-    //delete
-
-    //update
+    fun getAll(): Flow<List<BlockRuleEntity>>
 }
+
+////Insert
+//@Insert(onConflict = OnConflictStrategy.REPLACE)
+//suspend fun insert(rule: BlockRuleEntity): Long //retorna o id da regra adicionada
+//
+//
+//@Insert(onConflict = OnConflictStrategy.REPLACE)
+//suspend fun insertAll(rules:List<BlockRuleEntity>): List<Long> //retorna lista de ids das regras
+//
+//
+////Select
+//@Query("SELECT * FROM block_rule")
+//fun getAllWithFlow(): Flow<List<BlockRuleEntity>> //pedir explicacao para felipe
+//
+//
+//@Query("SELECT * FROM block_rule")
+//suspend fun getAllOnce(): List<BlockRuleEntity>
