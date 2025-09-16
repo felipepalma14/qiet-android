@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    //id("org.jetbrains.kotlin.kapt")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
@@ -115,7 +114,6 @@ android {
         val sourceDirs = listOf("src/main/java", "src/main/kotlin")
 
         classDirectories.setFrom(files(javaClasses, kotlinClasses))
-       // additionalSourceDirs.setFrom(files(sourceDirs))
         sourceDirectories.setFrom(files(sourceDirs))
 
         val execFiles = fileTree("$buildDir") {
@@ -169,7 +167,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    //kapt(libs.room.compiler)
     ksp(libs.room.compiler)
     implementation(libs.mockk)
     implementation(libs.mockk.android)

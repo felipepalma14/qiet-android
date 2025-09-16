@@ -28,19 +28,4 @@ interface BlockRuleDao {
     fun getAll(): Flow<List<BlockRuleEntity>>
 }
 
-////Insert
-//@Insert(onConflict = OnConflictStrategy.REPLACE)
-//suspend fun insert(rule: BlockRuleEntity): Long //retorna o id da regra adicionada
-//
-//
-//@Insert(onConflict = OnConflictStrategy.REPLACE)
-//suspend fun insertAll(rules:List<BlockRuleEntity>): List<Long> //retorna lista de ids das regras
-//
-//
-////Select
-//@Query("SELECT * FROM block_rule")
-//fun getAllWithFlow(): Flow<List<BlockRuleEntity>> //pedir explicacao para felipe
-//
-//
-//@Query("SELECT * FROM block_rule")
-//suspend fun getAllOnce(): List<BlockRuleEntity>
+
