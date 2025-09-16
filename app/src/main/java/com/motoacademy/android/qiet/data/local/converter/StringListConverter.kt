@@ -8,12 +8,12 @@ class StringListConverter {
     private val json = Json { ignoreUnknownKeys = true }
 
     @TypeConverter
-    fun fromList(value: List<String>?): String {
+    fun fromStringListToJson(value: List<String>?): String {
         return value?.let { json.encodeToString(it) } ?: "[]"
     }
 
     @TypeConverter
-    fun toList(value: String): List<String> {
+    fun fromJsonToStringList(value: String): List<String> {
         return json.decodeFromString(value)
     }
 }
