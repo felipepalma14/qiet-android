@@ -30,6 +30,7 @@ data class BlockRuleEntity(
     val blockedRegexRules: List<String> = emptyList(),
 
     val interval: IntervalTime? = null,
+
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 
