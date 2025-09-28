@@ -4,15 +4,14 @@ import com.motoacademy.android.qiet.data.local.model.BlockedContact
 import com.motoacademy.android.qiet.data.local.model.IntervalTime
 
 data class BlockRule(
-
-    val id: Long = 0L,
-
+    val id: Long,
     val ruleName: String,
     val isEnabled: Boolean,
     val color: String,
-
-    val blockedContacts: List<BlockedContact> = emptyList(),
-    val blockedRegexRules: List<String> = emptyList(),
-
-    val interval: IntervalTime? = null,
+    val blockedContacts: List<BlockedContact>,
+    val blockedRegexRules: List<String>,
+    val interval: IntervalTime?,
+    val createdAt: Long,
+    val updatedAt: Long
 )
+
