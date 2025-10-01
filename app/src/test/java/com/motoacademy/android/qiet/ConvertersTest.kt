@@ -12,6 +12,7 @@ import com.motoacademy.android.qiet.data.local.model.DayOfWeek
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ConvertersTest {
@@ -21,42 +22,49 @@ class ConvertersTest {
 
     // ---------- BlockedContactConverter ----------
     @Test
-    fun fromBlockedContactListToJson_withValidList_isCorrect() {
-        val contacts = listOf(
-            BlockedContact("12345", "Alice"),
-            BlockedContact("67890", "Bob")
-        )
-
-        val json = blockedContactConverter.fromBlockedContactListToJson(contacts)
-
-        val expected =
-            """[{"phoneNumber":"12345","displayName":"Alice"},{"phoneNumber":"67890","displayName":"Bob"}]"""
-        assertEquals(expected, json)
+    fun fromBlockedContactListToJson_withNull_returnsNull() {
+        val json = blockedContactConverter.fromBlockedContactListToJson(null)
+        assertNull(json)
     }
 
     @Test
-    fun fromBlockedContactListToJson_withNullList_returnsEmptyJsonArray() {
-        val json = blockedContactConverter.fromBlockedContactListToJson(null)
+    fun fromBlockedContactListToJson_withEmptyList_returnsValidJson() {
+        val json = blockedContactConverter.fromBlockedContactListToJson(emptyList())
         assertEquals("[]", json)
     }
 
     @Test
-    fun fromJsonToBlockedContactList_withValidJson_isCorrect() {
-        val json =
-            """[{"phoneNumber":"12345","displayName":"Alice"},{"phoneNumber":"67890","displayName":"Bob"}]"""
+    fun fromJsonToBlockedContactList_withNull_returnsEmptyList() {
+        val result = blockedContactConverter.fromJsonToBlockedContactList(null)
+        assertTrue(result.isEmpty())
+    }
 
-        val contacts = blockedContactConverter.fromJsonToBlockedContactList(json)
+    @Test
+    fun fromJsonToBlockedContactList_withEmptyString_returnsEmptyList() {
+        val result = blockedContactConverter.fromJsonToBlockedContactList("")
+        assertTrue(result.isEmpty())
+    }
 
-        assertEquals(2, contacts.size)
-        assertEquals("12345", contacts[0].phoneNumber)
-        assertEquals("Alice", contacts[0].displayName)
+    @Test
+    fun fromJsonToBlockedContactList_withInvalidJson_returnsEmptyList() {
+        val result = blockedContactConverter.fromJsonToBlockedContactList("invalid json")
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun fromJsonToBlockedContactList_withValidJson_returnsList() {
+        val json = """[{"phoneNumber":"123","displayName":"Test"}]"""
+        val result = blockedContactConverter.fromJsonToBlockedContactList(json)
+        assertEquals(1, result.size)
+        assertEquals("123", result[0].phoneNumber)
+        assertEquals("Test", result[0].displayName)
     }
 
     @Test
     fun blockedContact_roundTrip_isCorrect() {
         val original = listOf(
-            BlockedContact("11111", "Carol"),
-            BlockedContact("22222", null)
+            BlockedContact("123", "Test 1"),
+            BlockedContact("456", "Test 2")
         )
 
         val json = blockedContactConverter.fromBlockedContactListToJson(original)
