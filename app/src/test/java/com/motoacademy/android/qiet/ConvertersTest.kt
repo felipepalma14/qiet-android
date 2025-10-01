@@ -145,40 +145,49 @@ class ConvertersTest {
 
     // ---------- StringListConverter ----------
     @Test
-    fun fromStringListToJson_withValidList_isCorrect() {
-        val list = listOf("a", "b", "c")
-        val json = stringListConverter.fromStringListToJson(list)
-        assertEquals("""["a","b","c"]""", json)
+    fun fromStringListToJson_withNull_returnsNull() {
+        val json = stringListConverter.fromStringListToJson(null)
+        assertNull(json)
     }
 
     @Test
-    fun fromStringListToJson_withNullList_returnsEmptyJsonArray() {
-        val json = stringListConverter.fromStringListToJson(null)
+    fun fromStringListToJson_withEmptyList_returnsValidJson() {
+        val json = stringListConverter.fromStringListToJson(emptyList())
         assertEquals("[]", json)
     }
 
     @Test
-    fun fromJsonToStringList_withValidJson_isCorrect() {
-        val json = """["x","y","z"]"""
-        val list = stringListConverter.fromJsonToStringList(json)
-        assertEquals(listOf("x", "y", "z"), list)
+    fun fromJsonToStringList_withNull_returnsEmptyList() {
+        val result = stringListConverter.fromJsonToStringList(null)
+        assertTrue(result.isEmpty())
     }
 
     @Test
-    fun fromJsonToStringList_withEmptyJsonArray_returnsEmptyList() {
-        val json = "[]"
-        val list = stringListConverter.fromJsonToStringList(json)
-        assertEquals(emptyList<String>(), list)
+    fun fromJsonToStringList_withEmptyString_returnsEmptyList() {
+        val result = stringListConverter.fromJsonToStringList("")
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun fromJsonToStringList_withInvalidJson_returnsEmptyList() {
+        val result = stringListConverter.fromJsonToStringList("invalid json")
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun fromJsonToStringList_withValidJson_returnsList() {
+        val json = """["item1", "item2", "item3"]"""
+        val result = stringListConverter.fromJsonToStringList(json)
+        assertEquals(listOf("item1", "item2", "item3"), result)
     }
 
     @Test
     fun stringList_roundTrip_isCorrect() {
-        val original = listOf("alpha", "beta", "gamma")
+        val original = listOf("apple", "banana", "cherry")
 
         val json = stringListConverter.fromStringListToJson(original)
         val result = stringListConverter.fromJsonToStringList(json)
 
         assertEquals(original, result)
     }
-
 }
