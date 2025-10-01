@@ -10,6 +10,8 @@ import com.motoacademy.android.qiet.data.local.model.IntervalTime
 import com.motoacademy.android.qiet.data.local.model.DayOfWeek
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class ConvertersTest {
@@ -65,32 +67,34 @@ class ConvertersTest {
 
     // ---------- IntervalTimeConverter ----------
     @Test
-    fun fromIntervalToJson_withValidInterval_isCorrect() {
-        val interval = IntervalTime(
-            startTime = "08:00",
-            endTime = "17:00",
-            daysOfWeek = listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY)
-        )
-
-        val json = intervalTimeConverter.fromIntervalToJson(interval)
-
-        val expected =
-            """{"startTime":"08:00","endTime":"17:00","daysOfWeek":["MONDAY","FRIDAY"]}"""
-        assertEquals(expected, json)
-    }
-
-    @Test
-    fun fromIntervalToJson_withNullInterval_returnsEmptyJsonObject() {
+    fun fromIntervalToJson_withNullInterval_returnsNull() {
         val json = intervalTimeConverter.fromIntervalToJson(null)
-        assertEquals("{}", json)
+        assertNull(json) // Espera null REAL, não string
     }
 
     @Test
-    fun fromJsonToStringList_withValidJsonInterval_isCorrect() {
-        val json =
-            """{"startTime":"08:00","endTime":"17:00","daysOfWeek":["MONDAY","FRIDAY"]}"""
+    fun fromJsonToInterval_withNullString_returnsNull() {
+        val interval = intervalTimeConverter.fromJsonToInterval(null)
+        assertNull(interval)
+    }
 
-        val interval = intervalTimeConverter.fromJsonToStringList(json)
+    @Test
+    fun fromJsonToInterval_withEmptyString_returnsNull() {
+        val interval = intervalTimeConverter.fromJsonToInterval("")
+        assertNull(interval)
+    }
+
+    @Test
+    fun fromJsonToInterval_withBlankString_returnsNull() {
+        val interval = intervalTimeConverter.fromJsonToInterval("   ")
+        assertNull(interval)
+    }
+
+    @Test
+    fun fromJsonToInterval_withValidJsonInterval_isCorrect() {
+        val json = """{"startTime":"08:00","endTime":"17:00","daysOfWeek":["MONDAY","FRIDAY"]}"""
+
+        val interval = intervalTimeConverter.fromJsonToInterval(json)
 
         requireNotNull(interval)
         assertEquals("08:00", interval.startTime)
@@ -107,9 +111,28 @@ class ConvertersTest {
         )
 
         val json = intervalTimeConverter.fromIntervalToJson(original)
-        val result = intervalTimeConverter.fromJsonToStringList(json)
+        val result = intervalTimeConverter.fromJsonToInterval(json)
 
+        assertNotNull(json) // JSON não deve ser null para objeto não-nulo
+        assertNotNull(result) // Resultado deve ser igual ao original
         assertEquals(original, result)
+    }
+
+    @Test
+    fun intervalTime_roundTrip_withNull_isCorrect() {
+        val original = null
+
+        val json = intervalTimeConverter.fromIntervalToJson(original)
+        val result = intervalTimeConverter.fromJsonToInterval(json)
+
+        assertNull(json) // JSON deve ser null para objeto null
+        assertNull(result) // Resultado deve ser null
+    }
+
+    @Test
+    fun fromJsonToInterval_withInvalidJson_returnsNull() {
+        val interval = intervalTimeConverter.fromJsonToInterval("invalid json")
+        assertNull(interval)
     }
 
     // ---------- StringListConverter ----------

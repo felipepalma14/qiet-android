@@ -10,12 +10,18 @@ class IntervalTimeConverter {
     private val json = Json { ignoreUnknownKeys = true }
 
     @TypeConverter
-    fun fromIntervalToJson(value: IntervalTime?): String {
-        return value?.let { json.encodeToString(it) } ?: "{}"
+    fun fromIntervalToJson(value: IntervalTime?): String? {
+        return value?.let { json.encodeToString(it) }
     }
 
     @TypeConverter
-    fun fromJsonToStringList(value: String): IntervalTime? {
-        return json.decodeFromString<IntervalTime>(value)
+    fun fromJsonToInterval(value: String?): IntervalTime? {
+        return value?.takeIf { it.isNotBlank() }?.let {
+            try{
+                json.decodeFromString<IntervalTime>(it)
+            } catch (e: Exception){
+                 null
+            }
+        }
     }
 }
