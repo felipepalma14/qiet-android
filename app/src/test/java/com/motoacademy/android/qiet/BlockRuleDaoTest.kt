@@ -13,12 +13,14 @@ import org.junit.Test
 import java.io.IOException
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 import com.motoacademy.android.qiet.data.local.AppDatabase
 import com.motoacademy.android.qiet.data.local.dao.BlockRuleDao
 import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
 
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [33])
 @OptIn(ExperimentalCoroutinesApi::class)
 class BlockRuleDaoTest {
 
