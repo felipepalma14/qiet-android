@@ -156,5 +156,4 @@ class BlockRuleDaoTest {
         dao.updateEnabled(id, true)
         assertTrue(dao.getById(id)?.isEnabled ?: false)
     }
-
 }
