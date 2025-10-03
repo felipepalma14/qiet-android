@@ -100,7 +100,8 @@ android {
             "**/di/**",
             "**/components/**",
             "**/navigation/**",
-            "**AppDatabase**"
+            "**AppDatabase**",
+            "**/data/mapper/**",
         )
 
         val javaClasses = fileTree("${project.buildDir}/tmp/kotlin-classes/debug") {
