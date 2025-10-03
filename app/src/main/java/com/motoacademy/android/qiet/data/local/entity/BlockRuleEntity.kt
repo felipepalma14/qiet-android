@@ -22,9 +22,9 @@ data class BlockRuleEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
 
-    val ruleName: String,
-    val isEnabled: Boolean,
-    val color: String,
+    val ruleName: String = "",
+    val isEnabled: Boolean = true,
+    val color: String = "#FFFFFF",
 
     val blockedContacts: List<BlockedContact> = emptyList(),
     val blockedRegexRules: List<String> = emptyList(),

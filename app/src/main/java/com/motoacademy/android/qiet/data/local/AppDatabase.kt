@@ -12,7 +12,7 @@ import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
 @Database(
     entities = [BlockRuleEntity::class],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 @TypeConverters(
     BlockedContactConverter::class,

@@ -15,11 +15,9 @@ class BlockRuleRepositoryImpl(
 
     override suspend fun getRuleById(id: Long): BlockRuleEntity? = dao.getById(id)
 
-    override suspend fun addRule(rule: BlockRuleEntity): Long = dao.insert(rule)
+    override suspend fun addOrUpdateRule(rule: BlockRuleEntity): Long = dao.insert(rule)
 
-    override suspend fun updateRule(rule: BlockRuleEntity) = dao.update(rule)
-
-    override suspend fun deleteRule(rule: BlockRuleEntity) = dao.delete(rule)
+    override suspend fun deleteRuleById(id: Long) = dao.deleteById(id)
 
     override suspend fun updateBlockedContacts(ruleId: Long, contacts: List<BlockedContact>) {
         dao.updateBlockedContacts(ruleId, contacts)
