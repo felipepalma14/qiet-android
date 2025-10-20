@@ -1,4 +1,5 @@
 package com.motoacademy.android.qiet.data.local.model
+
 import kotlinx.serialization.Serializable
 @Serializable
 enum class DayOfWeek {

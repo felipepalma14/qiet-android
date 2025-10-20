@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,17 +29,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Immutable
 data class BlockRule(
-    val id: String,
+    val id: Long,
     val title: String,
     val isChecked: Boolean = false,
     val blockInterval: String? = null,
     val prefixLabel: String? = null,
-    val blockedContactLabel: String? = null
+    val blockedContactLabel: String? = null,
+    val blockWeek: String? = null,
 )
 
 @Composable
@@ -47,6 +50,7 @@ fun BlockRuleInfo(
     icon: ImageVector,
     text: String,
     color: Color,
+    subtitle: String? = null,
     fontWeight: FontWeight = FontWeight.Normal,
 ) {
     Row(
@@ -58,11 +62,25 @@ fun BlockRuleInfo(
             contentDescription = text,
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = text,
-            fontWeight = fontWeight,
-            color = color
-        )
+        Column {
+            Text(
+                text = text,
+                fontWeight = fontWeight,
+                color = color,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            subtitle?.let {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.Normal,
+                    color = color,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
     }
 }
 
@@ -96,10 +114,12 @@ fun BlockRuleItem(
                 data.blockInterval?.let { blockInterval ->
                     BlockRuleInfo(
                         text = blockInterval,
+                        subtitle = data.blockWeek,
                         icon = Icons.Filled.DateRange,
                         color = Color.Gray
                     )
                 }
+
                 data.prefixLabel?.let { prefixLabel ->
                     BlockRuleInfo(
                         text = prefixLabel,
@@ -118,7 +138,9 @@ fun BlockRuleItem(
             }
 
             Column(
-                modifier = Modifier.align(Alignment.CenterVertically),
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 8.dp),
             ) {
                 Switch(
                     checked = data.isChecked,
@@ -154,10 +176,11 @@ fun BlockRuleItem(
 @Composable
 private fun BlockRuleItemPreview() {
     val item = BlockRule(
-        id = "1",
+        id = 1L,
         title = "Regra de Bloqueio",
         prefixLabel = "Prefixo(s): 3030, 4040",
         blockInterval = "Bloqueio: 08:00 - 18:00",
+        blockWeek = "Final de semana",
         blockedContactLabel = "2 Contato(s) bloqueado(s)",
     )
 
