@@ -80,6 +80,8 @@ fun BlockDashboardScreen() {
         )
     }
 
+    //bloqueio
+
     Column(
         modifier = Modifier
             .fillMaxSize()

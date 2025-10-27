@@ -35,7 +35,7 @@ fun AddCategoryScreen(
     var isEnabled by remember { mutableStateOf(false) }
     var color by remember { mutableStateOf(BlueCategory) }
 
-    // Estados da restrição de horário
+    //  restrição de horário
     var timeRestrictionEnabled by remember { mutableStateOf(false) }
     var startTime by remember { mutableStateOf("09:00") }
     var endTime by remember { mutableStateOf("22:00") }

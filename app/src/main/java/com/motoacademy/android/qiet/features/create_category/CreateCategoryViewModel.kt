@@ -35,6 +35,7 @@ fun AddCategoryScreen(
     var isEnabled by remember { mutableStateOf(false) }
     var color by remember { mutableStateOf(BlueCategory) }
 
+    //regras de bloqueio
 
     Column(
         modifier = Modifier

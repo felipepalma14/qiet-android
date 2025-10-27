@@ -14,6 +14,7 @@ fun NavHostContainer(
     modifier: Modifier = Modifier,
     navController: NavHostController,
 ) {
+    //navegação
 
     NavHost(
         navController = navController,
