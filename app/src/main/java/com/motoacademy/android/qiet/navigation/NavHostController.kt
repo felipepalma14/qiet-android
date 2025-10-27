@@ -21,7 +21,8 @@ fun NavHostContainer(
         modifier = modifier,
         builder = {
             composable<Screen.BlockDashboardScreen> {
-                BlockDashboardScreen(navController = navController)
+                BlockDashboardScreen()
+
             }
 
             composable<Screen.HistoryScreen> {
