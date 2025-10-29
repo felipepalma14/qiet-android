@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.motoacademy.android.qiet.navigation.BottomNavigationBar
 import com.motoacademy.android.qiet.navigation.NavHostContainer
@@ -34,6 +35,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             QietTheme {
                 val navController = rememberNavController()
+                val navBackStackEntry = navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry.value?.destination?.route
+
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
@@ -41,13 +45,16 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold(
                         floatingActionButton = {
-                            FloatingActionButton(onClick = {
-                                navController.navigate(Screen.AddCategoryScreen)
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "add"
-                                )
+
+                            if (currentDestination?.contains("BlockDashboardScreen") == true) {
+                                FloatingActionButton(onClick = {
+                                    navController.navigate(Screen.AddCategoryScreen)
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "add"
+                                    )
+                                }
                             }
                         },
                         modifier = Modifier
@@ -55,14 +62,11 @@ class MainActivity : ComponentActivity() {
                             .statusBarsPadding()
                             .navigationBarsPadding(),
                         bottomBar = {
-                            BottomNavigationBar(
-                                navController = navController
-                            )
+                            BottomNavigationBar(navController = navController)
                         }
                     ) { innerPadding ->
                         NavHostContainer(
-                            modifier = Modifier
-                                .padding(innerPadding),
+                            modifier = Modifier.padding(innerPadding),
                             navController = navController
                         )
                     }
