@@ -6,8 +6,8 @@ import dagger.hilt.InstallIn
 import javax.inject.Singleton
 import dagger.hilt.components.SingletonComponent
 import com.motoacademy.android.qiet.data.local.dao.BlockRuleDao
+import com.motoacademy.android.qiet.data.repository.BlockRuleFakeRepositoryImpl
 import com.motoacademy.android.qiet.domain.repository.BlockRuleRepository
-import com.motoacademy.android.qiet.data.repository.BlockRuleRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -18,6 +18,6 @@ object RepositoryModule {
     fun provideBlockRuleRepository(
         dao: BlockRuleDao
     ): BlockRuleRepository {
-        return BlockRuleRepositoryImpl(dao)
+        return BlockRuleFakeRepositoryImpl()
     }
 }

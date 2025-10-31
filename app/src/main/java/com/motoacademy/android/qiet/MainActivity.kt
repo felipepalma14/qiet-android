@@ -24,8 +24,10 @@ import com.motoacademy.android.qiet.navigation.BottomNavigationBar
 import com.motoacademy.android.qiet.navigation.NavHostContainer
 import com.motoacademy.android.qiet.navigation.Screen
 import com.motoacademy.android.qiet.ui.theme.QietTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalMaterial3Api::class)
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
