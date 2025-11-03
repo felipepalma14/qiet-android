@@ -4,8 +4,12 @@ import kotlinx.coroutines.flow.Flow
 import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
 import com.motoacademy.android.qiet.data.local.model.IntervalTime
 import com.motoacademy.android.qiet.data.local.model.BlockedContact
+import com.motoacademy.android.qiet.domain.model.BlockedCallSpam
+
 interface BlockRuleRepository {
     fun getAllRules(): Flow<List<BlockRuleEntity>>
+
+    fun getAllBlockedCalls(): Flow<List<BlockedCallSpam>>
     suspend fun getRuleById(id: Long): BlockRuleEntity?
 
     suspend fun addOrUpdateRule(rule: BlockRuleEntity): Long

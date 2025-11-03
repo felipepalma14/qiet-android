@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 
 @Immutable
 data class SpamCall(
-    val id: String,
+    val id: Long,
     val phoneNumber: String,
     val date: String,
     val status: String
@@ -105,7 +105,7 @@ private fun SpamCallItemPreview() {
         SpamCallItem(
             modifier = Modifier.fillMaxWidth(),
             spamCall = SpamCall(
-                id = "1",
+                id = 1,
                 phoneNumber = "+55 21 99876-5432",
                 date = "12/10/2023",
                 status = "Almoço"
@@ -113,7 +113,7 @@ private fun SpamCallItemPreview() {
         )
         SpamCallItem(
             spamCall = SpamCall(
-                id = "2",
+                id = 2,
                 phoneNumber = "+55 11 98765-4321",
                 date = "11/10/2023",
                 status = "Cobrança"
