@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -22,6 +25,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,12 +36,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
+import com.motoacademy.android.qiet.ui.components.list.SpamCall
+import com.motoacademy.android.qiet.ui.components.list.SpamCallItem
+
+@Immutable
+data class SearchFilterBarModel(
+    val filterButtonTitle: String,
+    val searchPlaceholder: String,
+    val dialogTitle: String,
+    val categoryList: List<BlockRuleEntity>
+)
 
 @Composable
 fun SearchFilterBar(
     modifier: Modifier = Modifier,
+    data: SearchFilterBarModel,
     onSearch: (String) -> Unit,
-    onFilterSelected: (String) -> Unit,
+    onFilterSelected: (BlockRuleEntity) -> Unit,
 ) {
     var textState by remember { mutableStateOf(TextFieldValue("")) }
     var showDialog by remember { mutableStateOf(false) }
@@ -60,7 +76,7 @@ fun SearchFilterBar(
                 textState = it
                 onSearch(it.text) // retorna o valor digitado p/ ViewModel
             },
-            placeholder = { Text("Buscar por número") },
+            placeholder = { Text(data.searchPlaceholder) },
             leadingIcon = {
                 Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Gray)
             },
@@ -93,7 +109,7 @@ fun SearchFilterBar(
                 tint = Color.Black
             )
             Spacer(modifier = Modifier.width(4.dp))
-            Text("Filtrar", color = Color.Black)
+            Text(data.filterButtonTitle, color = Color.Black)
         }
     }
 
@@ -102,20 +118,19 @@ fun SearchFilterBar(
         AlertDialog(
             onDismissRequest = { showDialog = false },
             confirmButton = {},
-            title = { Text("Selecione um filtro") },
+            title = { Text(data.dialogTitle) },
             text = {
-                Column {
-                    FilterOption("Hora do almoço") {
-                        onFilterSelected("Hora do almoço")
-                        showDialog = false
-                    }
-                    FilterOption("Sogra") {
-                        onFilterSelected("Sogra")
-                        showDialog = false
-                    }
-                    FilterOption("Cobrança") {
-                        onFilterSelected("Cobrança")
-                        showDialog = false
+                LazyColumn {
+                    items(
+                        items = data.categoryList,
+                        key = { it.id }
+                    ) { item ->
+                        FilterOption(item.ruleName) {
+                            onFilterSelected(item)
+                            onSearch(item.ruleName)
+                            textState = TextFieldValue(item.ruleName)
+                            showDialog = false
+                        }
                     }
                 }
             }
@@ -139,6 +154,12 @@ private fun SearchBarWithFilterPreview() {
                 .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(12.dp))
                 .padding(8.dp),
+            data = SearchFilterBarModel(
+                searchPlaceholder = "Buscar por número",
+                filterButtonTitle = "Filter",
+                dialogTitle = "Selecione a categoria",
+                categoryList = listOf()
+            ),
             onSearch = {},
             onFilterSelected = {}
         )

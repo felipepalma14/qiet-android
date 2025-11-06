@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,6 +34,7 @@ import com.motoacademy.android.qiet.ui.components.list.BlockRule
 import com.motoacademy.android.qiet.ui.components.list.SpamCall
 import com.motoacademy.android.qiet.ui.components.list.SpamCallItem
 import com.motoacademy.android.qiet.ui.components.search.SearchFilterBar
+import com.motoacademy.android.qiet.ui.components.search.SearchFilterBarModel
 
 @Composable
 fun CallHistoryScreen(modifier: Modifier = Modifier) {
@@ -45,6 +47,7 @@ fun CallHistoryScreen(modifier: Modifier = Modifier) {
 
     val daily by viewModel.dailyBlockedCallStatus.collectAsStateWithLifecycle()
     val blockedCallsStatus by viewModel.blockedCallStatus.collectAsStateWithLifecycle()
+    val blockRulesStatus by viewModel.blockRulesStatus.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.loadBlockedCalls()
@@ -79,8 +82,14 @@ fun CallHistoryScreen(modifier: Modifier = Modifier) {
 
         SearchFilterBar(
             modifier = Modifier.fillMaxWidth(),
-            onSearch = {
-
+            data = SearchFilterBarModel(
+                searchPlaceholder = "Buscar por número",
+                filterButtonTitle = "Filter",
+                dialogTitle = "Selecione a categoria",
+                categoryList = blockRulesStatus
+            ),
+            onSearch = { rule ->
+                viewModel.filter(rule)
             },
             onFilterSelected = {
                 Toast.makeText(context, "Filtro clicado", Toast.LENGTH_SHORT).show()
@@ -107,4 +116,10 @@ fun CallHistoryScreen(modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun CallHistoryScreenPreview() {
+    CallHistoryScreen()
 }
