@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,10 +35,9 @@ class CallHistoryViewModel @Inject constructor(
     val blockedCallStatus: StateFlow<List<BlockedCallSpamUi>> = _blockedCallStatus.asStateFlow()
 
     val blockedCallsUiState = getAllBlockedCallsUseCase()
-        .stateIn(
+        .shareIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
+            started = SharingStarted.WhileSubscribed(5_000)
         )
 
     fun loadBlockedCalls() {
@@ -48,11 +48,11 @@ class CallHistoryViewModel @Inject constructor(
                 }
             }
 
-            launch {
-                getAllBlockedCallsUseCase().collect { blockedCalls ->
-                    _blockedCallStatus.value = blockedCalls
-                }
-            }
+//            launch {
+//                getAllBlockedCallsUseCase().collect { blockedCalls ->
+//                    _blockedCallStatus.value = blockedCalls
+//                }
+//            }
 
             launch {
                 getAllBlockRulesUseCase().collect { blockRules ->

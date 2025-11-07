@@ -1,6 +1,7 @@
 package com.motoacademy.android.qiet.di
 
 import com.motoacademy.android.qiet.domain.repository.BlockRuleRepository
+import com.motoacademy.android.qiet.domain.usecase.AddBlockRuleUseCase
 import com.motoacademy.android.qiet.domain.usecase.GetAllBlockRulesUseCase
 import com.motoacademy.android.qiet.domain.usecase.GetAllBlockedCallsUseCase
 import com.motoacademy.android.qiet.domain.usecase.GetDailyBlockedCountUseCase
@@ -30,5 +31,10 @@ class UseCaseModule {
     @Provides
     fun provideGetAllBlockedCallsUseCase(repository: BlockRuleRepository): GetAllBlockedCallsUseCase {
         return GetAllBlockedCallsUseCase(repository)
+    }
+
+    @Provides
+    fun provideAddBlockRuleUseCase(repository: BlockRuleRepository): AddBlockRuleUseCase {
+        return AddBlockRuleUseCase(repository)
     }
 }

@@ -8,17 +8,20 @@ import com.motoacademy.android.qiet.domain.model.BlockedCallSpam
 import com.motoacademy.android.qiet.domain.repository.BlockRuleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class BlockRuleFakeRepositoryImpl @Inject constructor() : BlockRuleRepository {
 
     private val rules = MutableStateFlow<List<BlockRuleEntity>>(generateFakeRules())
 
-    private val blockedCall = MutableStateFlow<List<BlockedCallSpam>>(generateFakeBlockedCalls())
+    private val _blockedCall = MutableStateFlow<List<BlockedCallSpam>>(generateFakeBlockedCalls())
 
     override fun getAllRules(): Flow<List<BlockRuleEntity>> = rules
 
-    override fun getAllBlockedCalls(): Flow<List<BlockedCallSpam>> = blockedCall
+    override fun getAllBlockedCalls(): Flow<List<BlockedCallSpam>> = _blockedCall
 
     override suspend fun getRuleById(id: Long): BlockRuleEntity? {
         return rules.value.find { it.id == id }
@@ -44,22 +47,23 @@ class BlockRuleFakeRepositoryImpl @Inject constructor() : BlockRuleRepository {
     }
 
     override suspend fun addCallHistory(callSpam: BlockedCallSpam): Long {
-        val currentList = blockedCall.value.toMutableList()
-        val existingIndex = currentList.indexOfFirst { it.id == callSpam.id }
-
-        val newRule = callSpam.copy(
-            createdAt = System.currentTimeMillis(),
-            id = if (callSpam.id == 0L) (currentList.maxOfOrNull { it.id } ?: 0L) + 1 else callSpam.id
-        )
-
-        if (existingIndex >= 0) {
-            currentList[existingIndex] = newRule
-        } else {
-            currentList.add(newRule)
+//        val currentList = blockedCall.value.toMutableList()
+//        val existingIndex = currentList.indexOfFirst { it.id == callSpam.id }
+//
+//        val newRule = callSpam.copy(
+//            createdAt = System.currentTimeMillis(),
+//            id = if (callSpam.id == 0L) (currentList.maxOfOrNull { it.id } ?: 0L) + 1 else callSpam.id
+//        )
+//
+//        if (existingIndex >= 0) {
+//            currentList[existingIndex] = newRule
+//        } else {
+//            currentList.add(newRule)
+//        }
+        _blockedCall.update { current ->
+            (current + callSpam.copy(id = (current.count() + 10).toLong())).sortedByDescending { it.createdAt }
         }
-
-        blockedCall.value = currentList
-        return newRule.id
+        return 1L
     }
 
     override suspend fun deleteRuleById(id: Long) {

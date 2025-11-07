@@ -1,14 +1,10 @@
 package com.motoacademy.android.qiet.services
 
-import android.net.Uri
 import android.telecom.Call
 import android.telecom.CallScreeningService
 import android.util.Log
 import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
-import com.motoacademy.android.qiet.data.repository.BlockRuleFakeRepositoryImpl
-import com.motoacademy.android.qiet.data.repository.BlockRuleRepositoryImpl
 import com.motoacademy.android.qiet.domain.model.BlockedCallSpam
-import com.motoacademy.android.qiet.domain.repository.BlockRuleRepository
 import com.motoacademy.android.qiet.domain.usecase.GetAllBlockRulesUseCase
 import com.motoacademy.android.qiet.domain.usecase.SaveBlockedCallUseCase
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,10 +12,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 import javax.inject.Inject
+
 @AndroidEntryPoint
 class SpamCallScreeningService : CallScreeningService() {
 
@@ -27,10 +22,16 @@ class SpamCallScreeningService : CallScreeningService() {
     private val scope = CoroutineScope(Dispatchers.IO + serviceJob)
 
     // Repositório / use case simulado (injeção via Hilt recomendada)
-    var spamRepo: GetAllBlockRulesUseCase = GetAllBlockRulesUseCase(BlockRuleFakeRepositoryImpl())
+
+    @Inject
+    lateinit var getAllBlockRulesUseCase: GetAllBlockRulesUseCase
+    @Inject
+    lateinit var saveBlockedCallUseCase: SaveBlockedCallUseCase
+
+    //var spamRepo: GetAllBlockRulesUseCase = GetAllBlockRulesUseCase(BlockRuleFakeRepositoryImpl())
 
     // Callback ou repositório de histórico (simulado)
-    var blockedHistoryRepo: SaveBlockedCallUseCase = SaveBlockedCallUseCase(BlockRuleFakeRepositoryImpl())
+    //var saveBlockedCallUseCase: SaveBlockedCallUseCase = SaveBlockedCallUseCase(BlockRuleFakeRepositoryImpl())
 
     override fun onScreenCall(callDetails: Call.Details) {
         val phoneNumber = callDetails.handle?.schemeSpecificPart ?: return
@@ -40,7 +41,7 @@ class SpamCallScreeningService : CallScreeningService() {
             var shouldBlock = false
             var matchedRule: BlockRuleEntity? = null
 
-            spamRepo().collect { rules ->
+            getAllBlockRulesUseCase().collect { rules ->
                 val enabledRules = rules.filter { it.isEnabled }
 
                 for (rule in enabledRules) {
@@ -76,7 +77,7 @@ class SpamCallScreeningService : CallScreeningService() {
                     Log.d("SpamBlocker", "💾 Salvando chamada bloqueada: $blockedCall")
 
                     // Exemplo: salvar no banco ou repositório
-                    blockedHistoryRepo(blockedCall)
+                    saveBlockedCallUseCase(blockedCall)
 
                     // 🔕 Bloqueia / silencia a chamada
                     respondToCall(
