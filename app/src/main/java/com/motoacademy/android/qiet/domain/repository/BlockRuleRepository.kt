@@ -13,6 +13,7 @@ interface BlockRuleRepository {
     suspend fun getRuleById(id: Long): BlockRuleEntity?
 
     suspend fun addOrUpdateRule(rule: BlockRuleEntity): Long
+    suspend fun addCallHistory(callSpam: BlockedCallSpam): Long
     suspend fun deleteRuleById(id: Long)
     suspend fun updateBlockedContacts(ruleId: Long, contacts: List<BlockedContact>)
     suspend fun updateBlockedRegexRules(ruleId: Long, regexRules: List<String>)

@@ -43,6 +43,25 @@ class BlockRuleFakeRepositoryImpl @Inject constructor() : BlockRuleRepository {
         return newRule.id
     }
 
+    override suspend fun addCallHistory(callSpam: BlockedCallSpam): Long {
+        val currentList = blockedCall.value.toMutableList()
+        val existingIndex = currentList.indexOfFirst { it.id == callSpam.id }
+
+        val newRule = callSpam.copy(
+            createdAt = System.currentTimeMillis(),
+            id = if (callSpam.id == 0L) (currentList.maxOfOrNull { it.id } ?: 0L) + 1 else callSpam.id
+        )
+
+        if (existingIndex >= 0) {
+            currentList[existingIndex] = newRule
+        } else {
+            currentList.add(newRule)
+        }
+
+        blockedCall.value = currentList
+        return newRule.id
+    }
+
     override suspend fun deleteRuleById(id: Long) {
         rules.value = rules.value.filterNot { it.id == id }
     }

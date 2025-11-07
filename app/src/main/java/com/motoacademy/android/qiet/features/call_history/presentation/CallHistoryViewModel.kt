@@ -10,9 +10,11 @@ import com.motoacademy.android.qiet.domain.usecase.GetDailyBlockedCountUseCase
 import com.motoacademy.android.qiet.features.call_history.model.BlockedCallSpamUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,6 +32,13 @@ class CallHistoryViewModel @Inject constructor(
 
     private val _blockedCallStatus = MutableStateFlow<List<BlockedCallSpamUi>>(emptyList())
     val blockedCallStatus: StateFlow<List<BlockedCallSpamUi>> = _blockedCallStatus.asStateFlow()
+
+    val blockedCallsUiState = getAllBlockedCallsUseCase()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 
     fun loadBlockedCalls() {
         viewModelScope.launch {
