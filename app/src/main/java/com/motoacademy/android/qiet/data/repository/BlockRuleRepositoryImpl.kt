@@ -5,6 +5,7 @@ import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
 import kotlinx.coroutines.flow.Flow
 import com.motoacademy.android.qiet.data.local.model.BlockedContact
 import com.motoacademy.android.qiet.data.local.model.IntervalTime
+import com.motoacademy.android.qiet.domain.model.BlockedCallSpam
 import com.motoacademy.android.qiet.domain.repository.BlockRuleRepository
 
 class BlockRuleRepositoryImpl(
@@ -12,6 +13,10 @@ class BlockRuleRepositoryImpl(
 ) : BlockRuleRepository {
 
     override fun getAllRules(): Flow<List<BlockRuleEntity>> = dao.getAll()
+
+    override fun getAllBlockedCalls(): Flow<List<BlockedCallSpam>> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun getRuleById(id: Long): BlockRuleEntity? = dao.getById(id)
 

@@ -4,6 +4,7 @@ import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
 import com.motoacademy.android.qiet.data.local.model.BlockedContact
 import com.motoacademy.android.qiet.data.local.model.DayOfWeek
 import com.motoacademy.android.qiet.data.local.model.IntervalTime
+import com.motoacademy.android.qiet.domain.model.BlockedCallSpam
 import com.motoacademy.android.qiet.domain.repository.BlockRuleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,11 @@ class BlockRuleFakeRepositoryImpl @Inject constructor() : BlockRuleRepository {
 
     private val rules = MutableStateFlow<List<BlockRuleEntity>>(generateFakeRules())
 
+    private val blockedCall = MutableStateFlow<List<BlockedCallSpam>>(generateFakeBlockedCalls())
+
     override fun getAllRules(): Flow<List<BlockRuleEntity>> = rules
+
+    override fun getAllBlockedCalls(): Flow<List<BlockedCallSpam>> = blockedCall
 
     override suspend fun getRuleById(id: Long): BlockRuleEntity? {
         return rules.value.find { it.id == id }
@@ -65,6 +70,32 @@ class BlockRuleFakeRepositoryImpl @Inject constructor() : BlockRuleRepository {
         rules.value = updated
     }
 
+    private fun generateFakeBlockedCalls(): List<BlockedCallSpam> {
+        val now = System.currentTimeMillis()
+        val yesterday = now - (24 * 60 * 60 * 1000)
+        val any = 1761860768L
+        val weekly = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000)
+        val monthly = System.currentTimeMillis() - (30 * 24 * 60 * 60 * 1000)
+
+        return listOf(
+            BlockedCallSpam(
+                1, "Telemarketing", "93922202", "Telemarketing", now
+            ),
+            BlockedCallSpam(
+                2, "Spam Financeiro", "93922202", "Spam Financeiro", yesterday
+            ),
+            BlockedCallSpam(
+                3, "Contatos suspeitos", "93922202", "Contatos suspeitos", weekly
+            ),
+            BlockedCallSpam(
+                4, "Trabalho", "93922202", "xx", any
+            ),
+            BlockedCallSpam(
+                5, "Trabalho", "93922202", "Sogra :(", any
+            )
+
+        )
+    }
     private fun generateFakeRules(): List<BlockRuleEntity> {
         val now = System.currentTimeMillis()
         val weekdays = listOf(
