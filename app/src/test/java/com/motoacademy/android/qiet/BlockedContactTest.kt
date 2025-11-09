@@ -17,7 +17,7 @@ class BlockedContactTest {
 
     @Test
     fun blockedContact_creation_withoutDisplayName() {
-        val contact = BlockedContact("+5511888888888", null)
+        val contact = BlockedContact("+5511888888888", "+5511888888888")
 
         assertEquals("+5511888888888", contact.phoneNumber)
         assertNull(contact.displayName)

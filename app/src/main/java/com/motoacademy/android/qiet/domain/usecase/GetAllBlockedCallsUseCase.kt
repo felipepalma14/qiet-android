@@ -17,8 +17,8 @@ class GetAllBlockedCallsUseCase @Inject constructor(
     private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     private val locale = Locale("pt", "BR")
 
-    operator fun invoke(): Flow<List<BlockedCallSpamUi>> {
-        return repository.getAllBlockedCalls().map { calls ->
+    operator fun invoke(): Flow<List<BlockedCallSpamUi>> =
+        repository.getAllBlockedCalls().map { calls ->
             val now = LocalDate.now()
             val locale = Locale("pt", "BR")
             val currentWeek = now.get(WeekFields.of(locale).weekOfWeekBasedYear())
@@ -57,4 +57,4 @@ class GetAllBlockedCallsUseCase @Inject constructor(
             }.sortedByDescending { it.createdAt } // opcional: mais recentes primeiro
         }
     }
-}
+

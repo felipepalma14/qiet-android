@@ -21,6 +21,9 @@ class BlockRuleRepositoryImpl(
     override suspend fun getRuleById(id: Long): BlockRuleEntity? = dao.getById(id)
 
     override suspend fun addOrUpdateRule(rule: BlockRuleEntity): Long = dao.insert(rule)
+    override suspend fun addCallHistory(callSpam: BlockedCallSpam): Long {
+        return 1L
+    }
 
     override suspend fun deleteRuleById(id: Long) = dao.deleteById(id)
 

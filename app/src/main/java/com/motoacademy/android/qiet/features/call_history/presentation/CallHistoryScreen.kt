@@ -42,15 +42,20 @@ fun CallHistoryScreen(modifier: Modifier = Modifier) {
     val scrollState = rememberLazyListState()
     val screenScroll = rememberScrollState()
 
-
     val viewModel: CallHistoryViewModel = hiltViewModel()
 
     val daily by viewModel.dailyBlockedCallStatus.collectAsStateWithLifecycle()
-    val blockedCallsStatus by viewModel.blockedCallStatus.collectAsStateWithLifecycle()
+    val blockedCallsStatus by viewModel.blockedCallsUiState.collectAsStateWithLifecycle(emptyList())
     val blockRulesStatus by viewModel.blockRulesStatus.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.loadBlockedCalls()
+    }
+
+    LaunchedEffect(blockedCallsStatus.size) {
+        if (blockedCallsStatus.isNotEmpty()) {
+            scrollState.animateScrollToItem(0)
+        }
     }
 
     Column(

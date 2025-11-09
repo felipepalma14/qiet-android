@@ -168,6 +168,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.androidx.compose.runtime)
     ksp(libs.room.compiler)
     implementation(libs.mockk)
     implementation(libs.mockk.android)
