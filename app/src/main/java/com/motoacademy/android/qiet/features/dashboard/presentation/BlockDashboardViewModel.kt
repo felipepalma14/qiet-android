@@ -31,7 +31,7 @@ class BlockDashboardViewModel @Inject constructor(
     private fun observeRules() {
         viewModelScope.launch {
             getAllBlockRulesUseCase().collect { ruleList ->
-                _rules.value = ruleList.map {
+                _rules.value = ruleList.sortedByDescending { it.createdAt } .map {
                    val model = it.toModel()
                     BlockRule(
                         id = model.id,
@@ -42,7 +42,6 @@ class BlockDashboardViewModel @Inject constructor(
                         isChecked = model.isEnabled,
                         blockedContactLabel = if (model.blockedContacts.isNotEmpty()) "${model.blockedContacts.size} Contato(s) bloqueado(s)" else null
                     )
-
                 }
             }
         }

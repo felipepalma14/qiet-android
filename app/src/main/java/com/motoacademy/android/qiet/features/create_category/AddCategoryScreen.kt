@@ -1,6 +1,7 @@
 package com.motoacademy.android.qiet.features.create_category
 
 import android.app.TimePickerDialog
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,7 +24,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.motoacademy.android.qiet.data.local.model.DayOfWeek
+import com.motoacademy.android.qiet.data.local.model.toPtBrLabel
+import com.motoacademy.android.qiet.features.dashboard.presentation.BlockDashboardViewModel
+import com.motoacademy.android.qiet.navigation.Screen
 import com.motoacademy.android.qiet.ui.components.card.AddRuleNameCard
 import com.motoacademy.android.qiet.ui.components.card.SelectRuleColorCard
 import com.motoacademy.android.qiet.ui.theme.BlueCategory
@@ -34,23 +40,52 @@ import java.util.*
 fun AddCategoryScreen(
     navController: NavController
 ) {
+
+    val context = LocalContext.current
+
+    val viewModel: CreateCategoryViewModel = hiltViewModel()
+
+    val state by viewModel.state.collectAsState()
+
     val screenScroll = rememberScrollState()
 
-    var ruleName by remember { mutableStateOf("") }
-    var isEnabled by remember { mutableStateOf(false) }
-    var color by remember { mutableStateOf(BlueCategory) }
+    // var color by remember { mutableStateOf(BlueCategory) }
 
     // Prefixos de bloqueio
     var prefixInput by remember { mutableStateOf("") }
     val prefixList = remember { mutableStateListOf<String>() }
 
-    // restrição de horário
-    var timeRestrictionEnabled by remember { mutableStateOf(false) }
     var startTime by remember { mutableStateOf("09:00") }
     var endTime by remember { mutableStateOf("22:00") }
 
-    val daysOfWeek = listOf("Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom")
+    //val daysOfWeek = listOf("Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom")
+    val daysOfWeek = listOf(
+        DayOfWeek.MONDAY,
+        DayOfWeek.TUESDAY,
+        DayOfWeek.WEDNESDAY,
+        DayOfWeek.THURSDAY,
+        DayOfWeek.FRIDAY,
+        DayOfWeek.SATURDAY,
+        DayOfWeek.SUNDAY
+    )
     val selectedDays = remember { mutableStateListOf<String>() }
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when(effect) {
+                is RuleEffect.NavigateBack -> {
+                    navController.popBackStack()
+                }
+                is RuleEffect.Success -> {
+                    navController.navigate(Screen.BlockDashboardScreen)
+                }
+                is RuleEffect.ShowError -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -68,13 +103,17 @@ fun AddCategoryScreen(
         Spacer(modifier = Modifier.size(16.dp))
 
         AddRuleNameCard(
-            ruleName = ruleName,
-            isEnabled = isEnabled,
-            onNameChange = { ruleName = it },
-            onToggleChange = { isEnabled = it },
+            ruleName = state.ruleName,
+            isEnabled = state.isEnabled,
+            onNameChange = {
+                viewModel.onEvent(RuleEvent.OnRuleNameChanged(it))
+                           },
+            onToggleChange = {
+                viewModel.onEvent(RuleEvent.OnToggleEnabled(it))
+            },
             modifier = Modifier.fillMaxWidth()
         )
-
+/*
         Spacer(Modifier.height(16.dp))
 
         SelectRuleColorCard(
@@ -82,7 +121,7 @@ fun AddCategoryScreen(
             color = color,
             onColorSelected = { color = it }
         )
-
+*/
         Spacer(Modifier.height(16.dp))
 
         // Prefixos de bloqueio
@@ -120,8 +159,12 @@ fun AddCategoryScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
-                        value = prefixInput,
-                        onValueChange = { prefixInput = it },
+                        value = state.prefixInput,
+                        onValueChange = {
+                            viewModel.onEvent(
+                                RuleEvent.OnPrefixInputChanged(it)
+                            )
+                        },
                         placeholder = { Text("Digite um prefixo") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
@@ -132,10 +175,9 @@ fun AddCategoryScreen(
                     Spacer(Modifier.width(8.dp))
                     IconButton(
                         onClick = {
-                            if (prefixInput.isNotBlank()) {
-                                prefixList.add(prefixInput.trim())
-                                prefixInput = ""
-                            }
+                            viewModel.onEvent(
+                                RuleEvent.OnAddPrefix(state.prefixInput.trim())
+                            )
                         },
                         modifier = Modifier
                             .size(48.dp)
@@ -153,7 +195,7 @@ fun AddCategoryScreen(
                 }
 
                 // Lista de prefixos
-                prefixList.forEach { prefix ->
+                state.prefixList.forEach { prefix ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -168,7 +210,13 @@ fun AddCategoryScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                         // Ícone de remover usando X
-                        IconButton(onClick = { prefixList.remove(prefix) }) {
+                        IconButton(
+                            onClick = {
+                                viewModel.onEvent(
+                                    RuleEvent.OnRemovePrefix(state.prefixInput.trim())
+                                )
+                            }
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Remover",
@@ -200,12 +248,12 @@ fun AddCategoryScreen(
                         fontWeight = FontWeight.Medium
                     )
                     Switch(
-                        checked = timeRestrictionEnabled,
-                        onCheckedChange = { timeRestrictionEnabled = it }
+                        checked = state.timeRestrictionEnabled,
+                        onCheckedChange = { viewModel.onEvent(RuleEvent.OnToggleTimeRestriction(it)) }
                     )
                 }
 
-                if (timeRestrictionEnabled) {
+                if (state.timeRestrictionEnabled) {
                     Spacer(Modifier.height(16.dp))
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -230,7 +278,7 @@ fun AddCategoryScreen(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 weekRow.forEach { day ->
-                                    val isSelected = selectedDays.contains(day)
+                                    val isSelected = state.selectedDays.contains(day)
                                     Box(
                                         modifier = Modifier
                                             .padding(4.dp)
@@ -242,18 +290,17 @@ fun AddCategoryScreen(
                                                 shape = RoundedCornerShape(50)
                                             )
                                             .clickable {
-                                                if (isSelected)
-                                                    selectedDays.remove(day)
-                                                else
-                                                    selectedDays.add(day)
+                                                viewModel.onEvent(
+                                                    RuleEvent.OnDaySelected(day))
+
                                             }
                                             .padding(vertical = 8.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = day,
+                                            text = day.toPtBrLabel(),
                                             color = if (isSelected) Color.White else Color.Black,
-                                            fontSize = 13.sp,
+                                            fontSize = 14.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             textAlign = TextAlign.Center
                                         )
@@ -274,18 +321,19 @@ fun AddCategoryScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             OutlinedButton(
-                onClick = { navController.navigate("block_rules_screen") },
+                onClick = { viewModel.onEvent(RuleEvent.OnCancelClicked) },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Cancelar")
             }
             Spacer(modifier = Modifier.width(16.dp))
+
             Button(
                 onClick = {
                     println("Prefixos: ${prefixList.joinToString()}")
                     println("Horário: $startTime - $endTime")
                     println("Dias selecionados: ${selectedDays.joinToString()}")
-                    navController.navigate("screen")
+                    viewModel.onEvent(RuleEvent.OnCreateClicked)
                 },
                 modifier = Modifier.weight(1f)
             ) {
