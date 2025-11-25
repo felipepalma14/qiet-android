@@ -52,8 +52,6 @@ fun AddCategoryScreen(
     // var color by remember { mutableStateOf(BlueCategory) }
 
     // Prefixos de bloqueio
-    var prefixInput by remember { mutableStateOf("") }
-    val prefixList = remember { mutableStateListOf<String>() }
 
     var startTime by remember { mutableStateOf("09:00") }
     var endTime by remember { mutableStateOf("22:00") }
@@ -330,7 +328,7 @@ fun AddCategoryScreen(
 
             Button(
                 onClick = {
-                    println("Prefixos: ${prefixList.joinToString()}")
+                    println("Prefixos: ${state.prefixList.joinToString()}")
                     println("Horário: $startTime - $endTime")
                     println("Dias selecionados: ${selectedDays.joinToString()}")
                     viewModel.onEvent(RuleEvent.OnCreateClicked)
