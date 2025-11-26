@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Qiet">
 
-        <!-- Servicos do app -->
+
         <service
             android:name=".services.QietInCallService"
             android:permission="android.permission.BIND_INCALL_SERVICE"
