@@ -45,7 +45,7 @@
             </intent-filter>
         </service>
 
-        <!-- Splash Activity (Tela Inicial) -->
+        <!-- Splash Activity  -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -73,7 +73,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Activity principal (abre após a splash) -->
+        <!-- Activity principal -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
