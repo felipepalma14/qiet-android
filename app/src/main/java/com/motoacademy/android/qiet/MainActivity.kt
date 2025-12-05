@@ -62,7 +62,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Solicita o papel de discador padrão se ainda não for
         if (!DialerUtils.isDefaultDialer(this)) {
             DialerUtils.requestDefaultDialer(this) { intent ->
                 dialerPermissionLauncher.launch(intent)

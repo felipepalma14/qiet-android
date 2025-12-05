@@ -5,6 +5,7 @@ import com.motoacademy.android.qiet.data.local.model.BlockedContact
 import com.motoacademy.android.qiet.data.local.model.DayOfWeek
 import com.motoacademy.android.qiet.data.local.model.IntervalTime
 import com.motoacademy.android.qiet.domain.model.BlockedCallSpam
+import com.motoacademy.android.qiet.domain.model.BlockRule // Importação adicionada
 import com.motoacademy.android.qiet.domain.repository.BlockRuleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,19 +48,6 @@ class BlockRuleFakeRepositoryImpl @Inject constructor() : BlockRuleRepository {
     }
 
     override suspend fun addCallHistory(callSpam: BlockedCallSpam): Long {
-//        val currentList = blockedCall.value.toMutableList()
-//        val existingIndex = currentList.indexOfFirst { it.id == callSpam.id }
-//
-//        val newRule = callSpam.copy(
-//            createdAt = System.currentTimeMillis(),
-//            id = if (callSpam.id == 0L) (currentList.maxOfOrNull { it.id } ?: 0L) + 1 else callSpam.id
-//        )
-//
-//        if (existingIndex >= 0) {
-//            currentList[existingIndex] = newRule
-//        } else {
-//            currentList.add(newRule)
-//        }
         _blockedCall.update { current ->
             (current + callSpam.copy(id = (current.count() + 10).toLong())).sortedByDescending { it.createdAt }
         }
@@ -84,6 +72,41 @@ class BlockRuleFakeRepositoryImpl @Inject constructor() : BlockRuleRepository {
 
     override suspend fun updateEnabled(ruleId: Long, enabled: Boolean) {
         updateRule(ruleId) { it.copy(isEnabled = enabled) }
+    }
+
+    override suspend fun deleteAllRules() {
+        rules.value = emptyList()
+    }
+
+    override suspend fun deleteAllCallHistory() {
+        _blockedCall.value = emptyList()
+    }
+
+    override suspend fun getRulesCount(): Int {
+        return rules.value.size
+    }
+
+    // NOVO MÉTODO IMPLEMENTADO
+    override suspend fun updateBlockRule(blockRule: BlockRule) {
+        // Primeiro busca a regra existente para preservar a cor
+        val existingEntity = getRuleById(blockRule.id)
+        val color = existingEntity?.color ?: "#FF5252"
+
+        // Converte BlockRule (modelo de domínio) para BlockRuleEntity
+        val entity = BlockRuleEntity(
+            id = blockRule.id,
+            ruleName = blockRule.ruleName,
+            isEnabled = blockRule.isEnabled,
+            color = color,
+            blockedContacts = blockRule.blockedContacts,
+            blockedRegexRules = blockRule.blockedRegexRules,
+            interval = blockRule.interval,
+            createdAt = blockRule.createdAt,
+            updatedAt = blockRule.updatedAt
+        )
+
+        // Usa o método existente addOrUpdateRule
+        addOrUpdateRule(entity)
     }
 
     private suspend fun updateRule(id: Long, transform: (BlockRuleEntity) -> BlockRuleEntity) {
@@ -116,9 +139,9 @@ class BlockRuleFakeRepositoryImpl @Inject constructor() : BlockRuleRepository {
             BlockedCallSpam(
                 5, "Trabalho", "93922202", "Sogra :(", any
             )
-
         )
     }
+
     private fun generateFakeRules(): List<BlockRuleEntity> {
         val now = System.currentTimeMillis()
         val weekdays = listOf(

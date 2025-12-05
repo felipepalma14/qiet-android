@@ -48,7 +48,7 @@ sealed interface RuleEvent {
     object OnCancelClicked : RuleEvent
 }
 
-// --- EFFECT (one time) ---
+// EFFECT (one time)
 sealed interface RuleEffect {
     object NavigateBack : RuleEffect
     object Success : RuleEffect
@@ -126,7 +126,7 @@ class CreateCategoryViewModel @Inject constructor(
         validateForm()
     }
 
-    // --- FUNÇÕES AUXILIARES ---
+
     private fun update(reducer: (RuleState) -> RuleState) {
         _state.value = reducer(_state.value)
     }

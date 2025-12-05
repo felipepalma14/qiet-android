@@ -51,6 +51,29 @@ interface BlockRuleDao {
         enabled: Boolean,
         updatedAt: Long = System.currentTimeMillis()
     )
-}
+
+
+        @Query("""
+        UPDATE block_rule SET 
+        ruleName = :ruleName,
+        isEnabled = :isEnabled,
+        blockedContacts = :blockedContacts,
+        blockedRegexRules = :blockedRegexRules,
+        interval = :interval,
+        updatedAt = :updatedAt
+        WHERE id = :id
+    """)
+        suspend fun updateFullBlockRule(
+            id: Long,
+            ruleName: String,
+            isEnabled: Boolean,
+            blockedContacts: List<BlockedContact>,
+            blockedRegexRules: List<String>,
+            interval: IntervalTime?,
+            updatedAt: Long
+        )
+    }
+
+
 
 
