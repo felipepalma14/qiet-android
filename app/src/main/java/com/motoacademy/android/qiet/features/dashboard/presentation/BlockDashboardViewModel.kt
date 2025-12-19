@@ -174,12 +174,12 @@ class BlockDashboardViewModel @Inject constructor(
                     updatedAt = System.currentTimeMillis()
                 )
 
-                println("🔄 [ViewModel] Regra preparada para salvar:")
-                println("🔄 [ViewModel]   Novo nome: '${updatedRule.ruleName}'")
-                println("🔄 [ViewModel]   Novo status: ${updatedRule.isEnabled}")
-                println("🔄 [ViewModel]   Timestamp: ${updatedRule.updatedAt}")
+                println(" [ViewModel] Regra preparada para salvar:")
+                println("[ViewModel]   Novo nome: '${updatedRule.ruleName}'")
+                println("[ViewModel]   Novo status: ${updatedRule.isEnabled}")
+                println(" [ViewModel]   Timestamp: ${updatedRule.updatedAt}")
 
-                println("🔥 [ViewModel] Chamando updateBlockRuleUseCase...")
+                println("[ViewModel] Chamando updateBlockRuleUseCase...")
                 updateBlockRuleUseCase(updatedRule)
                 println("✅ [ViewModel] updateBlockRuleUseCase concluído")
 
@@ -187,11 +187,11 @@ class BlockDashboardViewModel @Inject constructor(
 
                 _uiState.value = BlockDashboardUiState.Success
 
-                println("🎉 [ViewModel] ===== SALVAMENTO CONCLUÍDO =====")
-                println("🎉 [ViewModel] Alterações processadas com sucesso!")
+                println(" [ViewModel] ===== SALVAMENTO CONCLUÍDO =====")
+                println(" [ViewModel] Alterações processadas com sucesso!")
 
             } catch (e: Exception) {
-                println("💥 [ViewModel] ERRO ao salvar: ${e.message}")
+                println("[ViewModel] ERRO ao salvar: ${e.message}")
                 e.printStackTrace()
                 _uiState.value = BlockDashboardUiState.Error("Erro ao salvar: ${e.message}")
             }
@@ -232,20 +232,20 @@ class BlockDashboardViewModel @Inject constructor(
             return false
         }
 
-        println("🔍 [ViewModel] Regra no banco:")
-        println("🔍 [ViewModel]   ID: ${ruleInDb.id}")
-        println("🔍 [ViewModel]   Nome: '${ruleInDb.ruleName}'")
-        println("🔍 [ViewModel]   Esperado: '$expectedName'")
-        println("🔍 [ViewModel]   Status: ${ruleInDb.isEnabled}")
-        println("🔍 [ViewModel]   Última atualização: ${ruleInDb.updatedAt}")
+        println("[ViewModel] Regra no banco:")
+        println(" [ViewModel]   ID: ${ruleInDb.id}")
+        println(" [ViewModel]   Nome: '${ruleInDb.ruleName}'")
+        println(" [ViewModel]   Esperado: '$expectedName'")
+        println(" [ViewModel]   Status: ${ruleInDb.isEnabled}")
+        println("[ViewModel]   Última atualização: ${ruleInDb.updatedAt}")
 
         val isSaved = ruleInDb.ruleName == expectedName
 
         if (isSaved) {
-            println("✅ [ViewModel] VERIFICAÇÃO: Regra FOI salva corretamente!")
+            println("[ViewModel] VERIFICAÇÃO: Regra FOI salva corretamente!")
         } else {
-            println("❌ [ViewModel] VERIFICAÇÃO: Regra NÃO foi salva!")
-            println("❌ [ViewModel] Diferença no nome!")
+            println("[ViewModel] VERIFICAÇÃO: Regra NÃO foi salva!")
+            println("[ViewModel] Diferença no nome!")
         }
 
         return isSaved

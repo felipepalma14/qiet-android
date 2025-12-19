@@ -17,69 +17,43 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.motoacademy.android.qiet.data.local.model.DayOfWeek
 import com.motoacademy.android.qiet.data.local.model.toPtBrLabel
-import com.motoacademy.android.qiet.features.dashboard.presentation.BlockDashboardViewModel
 import com.motoacademy.android.qiet.navigation.Screen
-import com.motoacademy.android.qiet.ui.components.card.AddRuleNameCard
-import com.motoacademy.android.qiet.ui.components.card.SelectRuleColorCard
-import com.motoacademy.android.qiet.ui.theme.BlueCategory
-import java.util.*
+import java.util.Calendar
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+private val PrimaryRed = Color(0xFFD32F2F)
+private val DarkRed = Color(0xFFB71C1C)
+private val TextGray = Color(0xFF8A8A8A)
+private val CardWhite = Color.White
+private val BackgroundGray = Color(0xFFF5F5F5)
+
 @Composable
-fun AddCategoryScreen(
-    navController: NavController
-) {
+fun AddCategoryScreen(navController: NavController) {
 
     val context = LocalContext.current
-
     val viewModel: CreateCategoryViewModel = hiltViewModel()
-
     val state by viewModel.state.collectAsState()
+    val scroll = rememberScrollState()
 
-    val screenScroll = rememberScrollState()
-
-    // var color by remember { mutableStateOf(BlueCategory) }
-
-    // Prefixos de bloqueio
-
-    var startTime by remember { mutableStateOf("09:00") }
-    var endTime by remember { mutableStateOf("22:00") }
-
-    //val daysOfWeek = listOf("Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom")
-    val daysOfWeek = listOf(
-        DayOfWeek.MONDAY,
-        DayOfWeek.TUESDAY,
-        DayOfWeek.WEDNESDAY,
-        DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-        DayOfWeek.SATURDAY,
-        DayOfWeek.SUNDAY
-    )
-    val selectedDays = remember { mutableStateListOf<String>() }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            when(effect) {
-                is RuleEffect.NavigateBack -> {
-                    navController.popBackStack()
-                }
-                is RuleEffect.Success -> {
-                    navController.navigate(Screen.BlockDashboardScreen)
-                }
-                is RuleEffect.ShowError -> {
+            when (effect) {
+                is RuleEffect.NavigateBack -> navController.popBackStack()
+                is RuleEffect.Success -> navController.navigate(Screen.BlockDashboardScreen)
+                is RuleEffect.ShowError ->
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                }
             }
         }
     }
@@ -88,290 +62,283 @@ fun AddCategoryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(screenScroll)
+            .background(BackgroundGray)
+            .verticalScroll(scroll)
     ) {
-        Text(
-            text = "Nova regra",
-            style = MaterialTheme.typography.headlineMedium,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
 
-        Spacer(modifier = Modifier.size(16.dp))
 
-        AddRuleNameCard(
-            ruleName = state.ruleName,
-            isEnabled = state.isEnabled,
-            onNameChange = {
-                viewModel.onEvent(RuleEvent.OnRuleNameChanged(it))
-                           },
-            onToggleChange = {
-                viewModel.onEvent(RuleEvent.OnToggleEnabled(it))
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-/*
-        Spacer(Modifier.height(16.dp))
-
-        SelectRuleColorCard(
-            title = "Cor da regra",
-            color = color,
-            onColorSelected = { color = it }
-        )
-*/
-        Spacer(Modifier.height(16.dp))
-
-        // Prefixos de bloqueio
-        Card(
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Call,
-                        contentDescription = null,
-                        tint = Color(0xFF2196F3)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(PrimaryRed, DarkRed)
                     )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "Prefixo para bloquear",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = "Ex: 0800, 11, +55...",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
                 )
-
-                Spacer(Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(
-                        value = state.prefixInput,
-                        onValueChange = {
-                            viewModel.onEvent(
-                                RuleEvent.OnPrefixInputChanged(it)
-                            )
-                        },
-                        placeholder = { Text("Digite um prefixo") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        singleLine = true,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    IconButton(
-                        onClick = {
-                            viewModel.onEvent(
-                                RuleEvent.OnAddPrefix(state.prefixInput.trim())
-                            )
-                        },
-                        modifier = Modifier
-                            .size(48.dp)
-                            .background(
-                                Color(0xFFEEEEEE),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Adicionar",
-                            tint = Color.Black
-                        )
-                    }
-                }
-
-                // Lista de prefixos
-                state.prefixList.forEach { prefix ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "- $prefix",
-                            color = Color(0xFFD32F2F),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        // Ícone de remover usando X
-                        IconButton(
-                            onClick = {
-                                viewModel.onEvent(
-                                    RuleEvent.OnRemovePrefix(state.prefixInput.trim())
-                                )
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Remover",
-                                tint = Color.Gray
-                            )
-                        }
-                    }
-                }
-            }
+                .padding(vertical = 20.dp)
+        ) {
+            Text(
+                text = "Nova Regra",
+                fontSize = 28.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
         }
 
         Spacer(Modifier.height(24.dp))
 
-        // Restrição de horário
-        Card(
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            modifier = Modifier.fillMaxWidth()
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(CardWhite)
+                .padding(20.dp)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+            Text("Nome da regra", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = state.ruleName,
+                onValueChange = { viewModel.onEvent(RuleEvent.OnRuleNameChanged(it)) },
+                singleLine = true,
+                placeholder = { Text("Ex: Bloquear 0800", color = TextGray) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = PrimaryRed,
+                    unfocusedBorderColor = Color(0xFFBDBDBD),
+                    cursorColor = PrimaryRed
+                )
+            )
+            Spacer(Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+            }
+        }
+
+        Spacer(Modifier.height(22.dp))
+
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(CardWhite)
+                .padding(20.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Spacer(Modifier.width(6.dp))
+                Text("Prefixos bloqueados", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+            }
+            Spacer(Modifier.height(6.dp))
+            Text("Ex: 0800, 11, +55", fontSize = 13.sp, color = TextGray)
+            Spacer(Modifier.height(14.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                OutlinedTextField(
+                    value = state.prefixInput,
+                    onValueChange = { viewModel.onEvent(RuleEvent.OnPrefixInputChanged(it)) },
+                    placeholder = { Text("Digite um prefixo", color = TextGray) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = PrimaryRed,
+                        unfocusedBorderColor = Color(0xFFBDBDBD),
+                        cursorColor = PrimaryRed
+                    )
+                )
+
+                Spacer(Modifier.width(12.dp))
+
+                FilledTonalButton(
+                    onClick = { viewModel.onEvent(RuleEvent.OnAddPrefix(state.prefixInput.trim())) },
+                    modifier = Modifier.size(48.dp),
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = PrimaryRed
+                    ),
+                    contentPadding = PaddingValues(0.dp)
                 ) {
                     Text(
-                        text = "Restrições de horário",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Switch(
-                        checked = state.timeRestrictionEnabled,
-                        onCheckedChange = { viewModel.onEvent(RuleEvent.OnToggleTimeRestriction(it)) }
+                        "+",
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
+            }
 
-                if (state.timeRestrictionEnabled) {
-                    Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
+
+            Column {
+                state.prefixList.forEach { prefix ->
                     Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        TimePickerButton("Início", startTime) { startTime = it }
-                        TimePickerButton("Fim", endTime) { endTime = it }
-                    }
-
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        text = "Dias da semana",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Spacer(Modifier.height(8.dp))
-
-                    Column {
-                        for (weekRow in daysOfWeek.chunked(4)) {
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                weekRow.forEach { day ->
-                                    val isSelected = state.selectedDays.contains(day)
-                                    Box(
-                                        modifier = Modifier
-                                            .padding(4.dp)
-                                            .weight(1f)
-                                            .background(
-                                                if (isSelected)
-                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
-                                                else Color(0xFFE0E0E0),
-                                                shape = RoundedCornerShape(50)
-                                            )
-                                            .clickable {
-                                                viewModel.onEvent(
-                                                    RuleEvent.OnDaySelected(day))
-
-                                            }
-                                            .padding(vertical = 8.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = day.toPtBrLabel(),
-                                            color = if (isSelected) Color.White else Color.Black,
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    }
-                                }
-                            }
+                        Text(
+                            prefix,
+                            color = PrimaryRed,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
+                        IconButton(
+                            onClick = { viewModel.onEvent(RuleEvent.OnRemovePrefix(prefix)) }
+                        ) {
+                            Icon(Icons.Default.Close, contentDescription = null, tint = Color.Gray)
                         }
                     }
                 }
             }
         }
 
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(22.dp))
 
-        // Botões Criar e Cancelar
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(CardWhite)
+                .padding(20.dp)
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Restrições de horário", fontWeight = FontWeight.SemiBold)
+                RedSwitch(
+                    checked = state.timeRestrictionEnabled,
+                    onCheckedChange = { viewModel.onEvent(RuleEvent.OnToggleTimeRestriction(it)) }
+                )
+            }
+
+            if (state.timeRestrictionEnabled) {
+                Spacer(Modifier.height(16.dp))
+                Row {
+                    TimeSelector(
+                        label = "Início",
+                        time = state.startTime,
+                        onSelect = { viewModel.onEvent(RuleEvent.OnStartTimeChanged(it)) }
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    TimeSelector(
+                        label = "Fim",
+                        time = state.endTime,
+                        onSelect = { viewModel.onEvent(RuleEvent.OnEndTimeChanged(it)) }
+                    )
+                }
+                Spacer(Modifier.height(20.dp))
+                Text("Dias da semana", fontWeight = FontWeight.Medium)
+                Spacer(Modifier.height(10.dp))
+
+                Column {
+                    DayOfWeek.entries.chunked(4).forEach { row ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            row.forEach { day ->
+                                DayChip(
+                                    label = day.toPtBrLabel(),
+                                    selected = day in state.selectedDays,
+                                    color = PrimaryRed
+                                ) {
+                                    viewModel.onEvent(RuleEvent.OnDaySelected(day))
+                                }
+                            }
+                        }
+                        Spacer(Modifier.height(6.dp))
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(30.dp))
+
+
+        Row(modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(
                 onClick = { viewModel.onEvent(RuleEvent.OnCancelClicked) },
                 modifier = Modifier.weight(1f)
-            ) {
-                Text("Cancelar")
-            }
-            Spacer(modifier = Modifier.width(16.dp))
+            ) { Text("Cancelar", color = Color.Red) }
+
+            Spacer(Modifier.width(16.dp))
 
             Button(
-                onClick = {
-                    println("Prefixos: ${state.prefixList.joinToString()}")
-                    println("Horário: $startTime - $endTime")
-                    println("Dias selecionados: ${selectedDays.joinToString()}")
-                    viewModel.onEvent(RuleEvent.OnCreateClicked)
-                },
+                onClick = { viewModel.onEvent(RuleEvent.OnCreateClicked) },
+                enabled = state.isFormValid,
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryRed),
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Criar")
+                Text("Criar", color = Color.Black)
             }
         }
     }
 }
 
+
 @Composable
-fun TimePickerButton(label: String, time: String, onTimeSelected: (String) -> Unit) {
+fun RedSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Switch(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = Color.White,
+            checkedTrackColor = PrimaryRed,
+            uncheckedThumbColor = Color.White,
+            uncheckedTrackColor = Color(0xFFBDBDBD)
+        )
+    )
+}
+
+@Composable
+fun TimeSelector(label: String, time: String, onSelect: (String) -> Unit) {
     val context = LocalContext.current
-    Column(horizontalAlignment = Alignment.Start) {
-        Text(text = label, fontSize = 14.sp)
+    Column {
+        Text(label, fontSize = 14.sp)
+        Spacer(Modifier.height(6.dp))
         OutlinedButton(
             onClick = {
-                val calendar = Calendar.getInstance()
-                val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                val minute = calendar.get(Calendar.MINUTE)
+                val cal = Calendar.getInstance()
                 TimePickerDialog(
                     context,
-                    { _, selectedHour, selectedMinute ->
-                        val formattedTime =
-                            String.format("%02d:%02d", selectedHour, selectedMinute)
-                        onTimeSelected(formattedTime)
-                    },
-                    hour,
-                    minute,
+                    { _, h, m -> onSelect(String.format("%02d:%02d", h, m)) },
+                    cal.get(Calendar.HOUR_OF_DAY),
+                    cal.get(Calendar.MINUTE),
                     true
                 ).show()
             },
-            modifier = Modifier.width(120.dp),
-            shape = RoundedCornerShape(8.dp),
-            contentPadding = PaddingValues(vertical = 10.dp)
+            modifier = Modifier.width(120.dp)
         ) {
-            Text(
-                text = time,
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center
-            )
+            Text(time)
         }
+    }
+}
+
+@Composable
+fun DayChip(label: String, selected: Boolean, color: Color, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .background(
+                if (selected) color else Color(0xFFE0E0E0)
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = label,
+            color = if (selected) Color.White else Color.Black,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

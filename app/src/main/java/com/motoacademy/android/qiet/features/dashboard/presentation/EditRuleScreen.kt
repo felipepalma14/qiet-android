@@ -90,14 +90,14 @@ fun EditRuleScreen(
     }
 
     fun saveChanges() {
-        println("\n💾 [EditScreen] ===== INICIANDO SALVAMENTO =====")
-        println("💾 [EditScreen] ID da regra: $ruleId")
-        println("💾 [EditScreen] Novo nome: '$ruleName'")
-        println("💾 [EditScreen] Status: $isEnabled")
-        println("💾 [EditScreen] Prefixos: $prefixList")
-        println("💾 [EditScreen] Restrição de tempo: $timeRestrictionEnabled")
-        println("💾 [EditScreen] Horário: $startTime - $endTime")
-        println("💾 [EditScreen] Dias selecionados: $selectedDays")
+        println("\n[EditScreen] ===== INICIANDO SALVAMENTO =====")
+        println("[EditScreen] ID da regra: $ruleId")
+        println("[EditScreen] Novo nome: '$ruleName'")
+        println(" [EditScreen] Status: $isEnabled")
+        println("[EditScreen] Prefixos: $prefixList")
+        println("[EditScreen] Restrição de tempo: $timeRestrictionEnabled")
+        println("[EditScreen] Horário: $startTime - $endTime")
+        println("[EditScreen] Dias selecionados: $selectedDays")
 
         isSaving = true
 
@@ -115,13 +115,13 @@ fun EditRuleScreen(
                     selectedDays = if (timeRestrictionEnabled) selectedDays else null
                 )
 
-                // Aguarda um pouco e verifica se salvou
+                //  verifica se salvou
                 kotlinx.coroutines.delay(1000)
 
                 val savedSuccessfully = viewModel.verifyRuleWasSaved(ruleId, ruleName)
 
                 if (savedSuccessfully) {
-                    println("🎉 [EditScreen] SALVAMENTO BEM-SUCEDIDO!")
+                    println(" [EditScreen] SALVAMENTO BEM-SUCEDIDO!")
                     Toast.makeText(context, "Regra atualizada com sucesso!", Toast.LENGTH_SHORT).show()
                     navController.navigateUp()
                 } else {
@@ -130,7 +130,7 @@ fun EditRuleScreen(
                 }
 
             } catch (e: Exception) {
-                println("💥 [EditScreen] ERRO ao salvar: ${e.message}")
+                println("[EditScreen] ERRO ao salvar: ${e.message}")
                 Toast.makeText(context, "Erro ao salvar: ${e.message}", Toast.LENGTH_SHORT).show()
                 e.printStackTrace()
             } finally {
@@ -262,7 +262,7 @@ fun EditRuleScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Prefixos de bloqueio - CARD
+
             Card(
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -396,11 +396,11 @@ fun EditRuleScreen(
                         ) {
                             TimePickerButton("Início", startTime) {
                                 startTime = it
-                                println("⏰ [EditScreen] Start time: $it")
+                                println("[EditScreen] Start time: $it")
                             }
                             TimePickerButton("Fim", endTime) {
                                 endTime = it
-                                println("⏰ [EditScreen] End time: $it")
+                                println("[EditScreen] End time: $it")
                             }
                         }
 
@@ -476,7 +476,7 @@ fun EditRuleScreen(
 
                 Button(
                     onClick = {
-                        println("💾 [EditScreen] Botão SALVAR clicado!")
+                        println(" [EditScreen] Botão SALVAR clicado!")
                         saveChanges()
                     },
                     modifier = Modifier.weight(1f),
