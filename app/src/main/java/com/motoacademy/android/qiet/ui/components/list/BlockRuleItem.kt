@@ -94,7 +94,7 @@ fun BlockRuleItem(
                 data.blockedContactLabel?.let { InfoRow("CONTATOS", it, Color(0xFFAAAAAA), Color(0xFF333333)) }
             }
 
-            // Botões de ação delicados
+
             if (showActions && (onEditClick != null || onDeleteClick != null)) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(

@@ -1,5 +1,4 @@
 package com.motoacademy.android.qiet.features.dashboard.presentation
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.motoacademy.android.qiet.data.local.model.DayOfWeek
