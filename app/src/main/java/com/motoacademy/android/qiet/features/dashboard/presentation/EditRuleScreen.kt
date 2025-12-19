@@ -72,11 +72,11 @@ fun EditRuleScreen(
                 endTime = fullRule.interval?.endTime ?: "22:00"
                 selectedDays = fullRule.interval?.daysOfWeek ?: emptyList()
 
-                println("✅ [EditScreen] Dados carregados:")
-                println("✅ [EditScreen]   Nome: '$ruleName'")
-                println("✅ [EditScreen]   Status: $isEnabled")
-                println("✅ [EditScreen]   Prefixos: $prefixList")
-                println("✅ [EditScreen]   Intervalo: ${fullRule.interval?.let { "${it.startTime}-${it.endTime}" } ?: "null"}")
+                println(" [EditScreen] Dados carregados:")
+                println(" [EditScreen]   Nome: '$ruleName'")
+                println(" [EditScreen]   Status: $isEnabled")
+                println(" [EditScreen]   Prefixos: $prefixList")
+                println("[EditScreen]   Intervalo: ${fullRule.interval?.let { "${it.startTime}-${it.endTime}" } ?: "null"}")
             } else {
                 errorMessage = "Regra não encontrada"
                 println("❌ [EditScreen] Regra $ruleId não encontrada")
@@ -103,7 +103,7 @@ fun EditRuleScreen(
 
         coroutineScope.launch {
             try {
-                // 🔥 CHAMA A FUNÇÃO DE UPDATE DO VIEWMODEL
+
                 viewModel.updateRule(
                     ruleId = ruleId,
                     ruleName = ruleName,
@@ -242,10 +242,7 @@ fun EditRuleScreen(
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Medium
                         )
-                        Switch(
-                            checked = isEnabled,
-                            onCheckedChange = { isEnabled = it }
-                        )
+
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -270,11 +267,7 @@ fun EditRuleScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Call,
-                            contentDescription = null,
-                            tint = Color(0xFF2196F3)
-                        )
+
                         Spacer(Modifier.width(8.dp))
                         Text(
                             text = "Prefixo para bloquear",
