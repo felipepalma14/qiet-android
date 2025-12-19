@@ -115,7 +115,7 @@ fun EditRuleScreen(
                     selectedDays = if (timeRestrictionEnabled) selectedDays else null
                 )
 
-                //  verifica se salvou
+
                 kotlinx.coroutines.delay(1000)
 
                 val savedSuccessfully = viewModel.verifyRuleWasSaved(ruleId, ruleName)

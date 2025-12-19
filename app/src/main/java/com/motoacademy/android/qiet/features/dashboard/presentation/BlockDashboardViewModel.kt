@@ -139,11 +139,11 @@ class BlockDashboardViewModel @Inject constructor(
         selectedDays: List<DayOfWeek>?
     ) {
         viewModelScope.launch {
-            println("\n🔄 [ViewModel] ===== Salvando =====")
-            println("🔄 [ViewModel] ID da regra: $ruleId")
-            println("🔄 [ViewModel] Novo nome: '$ruleName'")
-            println("🔄 [ViewModel] Status: $isEnabled")
-            println("🔄 [ViewModel] Prefixos: $prefixList")
+
+            println(" [ViewModel] ID da regra: $ruleId")
+            println("[ViewModel] Novo nome: '$ruleName'")
+            println("[ViewModel] Status: $isEnabled")
+            println("[ViewModel] Prefixos: $prefixList")
 
             _uiState.value = BlockDashboardUiState.Loading
 
@@ -156,9 +156,9 @@ class BlockDashboardViewModel @Inject constructor(
                     return@launch
                 }
 
-                println("✅ [ViewModel] Regra encontrada:")
-                println("✅ [ViewModel]   Nome atual: '${existingRule.ruleName}'")
-                println("✅ [ViewModel]   Status atual: ${existingRule.isEnabled}")
+                println("[ViewModel] Regra encontrada:")
+                println(" [ViewModel]   Nome atual: '${existingRule.ruleName}'")
+                println("[ViewModel]   Status atual: ${existingRule.isEnabled}")
 
                 val updatedRule = existingRule.copy(
                     ruleName = ruleName,
@@ -223,12 +223,12 @@ class BlockDashboardViewModel @Inject constructor(
     }
 
     suspend fun verifyRuleWasSaved(ruleId: Long, expectedName: String): Boolean {
-        println("\n🔍 [ViewModel] VERIFICANDO se regra foi salva...")
+        println("\n [ViewModel] VERIFICANDO se regra foi salva...")
 
         val ruleInDb = getFullRuleById(ruleId)
 
         if (ruleInDb == null) {
-            println("❌ [ViewModel] Regra $ruleId não existe no banco!")
+            println("[ViewModel] Regra $ruleId não existe no banco!")
             return false
         }
 

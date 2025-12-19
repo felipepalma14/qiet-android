@@ -51,7 +51,7 @@ fun BlockRuleItem(
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
 
-            // Cabeçalho: título + status
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -87,7 +87,6 @@ fun BlockRuleItem(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Informações integradas ao card, sem fundo cinza
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 data.blockInterval?.let { InfoRow("HORÁRIO", it, Color(0xFFAAAAAA), Color(0xFFD32F2F)) }
                 data.blockWeek?.let { InfoRow("DIAS", it, Color(0xFFAAAAAA), Color(0xFF333333)) }
