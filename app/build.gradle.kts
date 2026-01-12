@@ -206,6 +206,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     // Testes com coroutines
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 

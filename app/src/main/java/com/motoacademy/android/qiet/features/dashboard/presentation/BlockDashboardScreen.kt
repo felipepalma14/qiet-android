@@ -134,7 +134,6 @@ fun BlockDashboardScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA))
     ) {
         // Header
         Box(

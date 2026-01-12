@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
@@ -34,11 +35,27 @@ class CallHistoryViewModel @Inject constructor(
     private val _blockedCallStatus = MutableStateFlow<List<BlockedCallSpamUi>>(emptyList())
     val blockedCallStatus: StateFlow<List<BlockedCallSpamUi>> = _blockedCallStatus.asStateFlow()
 
-    val blockedCallsUiState = getAllBlockedCallsUseCase()
-        .shareIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000)
-        )
+    private val filterState = MutableStateFlow("")
+
+    val blockedCallsUiState = combine(
+        getAllBlockedCallsUseCase(),
+        filterState
+    ) { calls, filter ->
+        calls.filter { call ->
+            val phoneMatch =
+                filter.isBlank() ||
+                        call.number.contains(filter, ignoreCase = true)
+
+            val reasonMatch =
+                filter.isBlank() ||
+                        call.reason.contains(filter, ignoreCase = true)
+
+            phoneMatch || reasonMatch
+        }
+    }.shareIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000)
+    )
 
     fun loadBlockedCalls() {
         viewModelScope.launch {
@@ -64,9 +81,7 @@ class CallHistoryViewModel @Inject constructor(
 
     fun filter(ruleName: String) {
         viewModelScope.launch {
-            getAllBlockedCallsUseCase().collect { items ->
-                _blockedCallStatus.value = items.filter { it.reason == ruleName }
-            }
+            filterState.value = ruleName
         }
     }
 

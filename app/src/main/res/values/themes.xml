@@ -11,9 +11,6 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-
-
-
     </style>
 
     <style name="Theme.Qiet.NoActionBar" parent="Theme.Qiet">
@@ -23,7 +20,16 @@
         <item name="android:windowActionBar">false</item>
     </style>
 
-
+    <style name="Theme.Qiet.Splash" parent="Theme.SplashScreen">
+        <!-- Background color -->
+        <item name="windowSplashScreenBackground">#FFD32F2F</item>
+        <!-- Your app logo -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- Animation duration -->
+        <item name="windowSplashScreenAnimationDuration">500</item>
+        <!-- Optional: remove status bar until transition -->
+        <item name="postSplashScreenTheme">@style/Theme.Qiet</item>
+    </style>
 
 
 

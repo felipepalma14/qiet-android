@@ -1,9 +1,11 @@
 package com.motoacademy.android.qiet.features.call_history.presentation
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,8 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,22 +65,35 @@ fun CallHistoryScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
             .scrollable(state = screenScroll, orientation = Orientation.Vertical)
     ) {
-        Text(
-            modifier = Modifier,
-            text = "Histórico de Bloqueio",
-            style = MaterialTheme.typography.headlineSmall,
-            fontSize = 20.sp,
-            color = Color.Black
-        )
+        // Header
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFD32F2F),
+                            Color(0xFFB71C1C)
+                        )
+                    )
+                )
+                .padding(horizontal = 20.dp, vertical = 24.dp)
+        ) {
+            Text(
+                text = "Histórico de Bloqueio",
+                fontSize = 24.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
         Spacer(modifier = Modifier.size(16.dp))
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         ) {
             StatsCard(title = "Diário", value = daily.toString())
             StatsCard(title = "Semanal", value = "15")
@@ -103,7 +120,7 @@ fun CallHistoryScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.size(16.dp))
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
             state = scrollState,
         ) {
             items(

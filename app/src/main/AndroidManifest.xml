@@ -19,10 +19,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Qiet">
-
-
+        android:supportsRtl="true">
         <service
             android:name=".services.QietInCallService"
             android:permission="android.permission.BIND_INCALL_SERVICE"
@@ -49,7 +46,7 @@
         <activity
             android:name=".SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.Qiet.NoActionBar">
+            android:theme="@style/Theme.Qiet.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -4,6 +4,7 @@ import android.telecom.Call
 import android.telecom.CallScreeningService
 import android.util.Log
 import com.motoacademy.android.qiet.data.local.entity.BlockRuleEntity
+import com.motoacademy.android.qiet.data.local.model.toAppDayOfWeek
 import com.motoacademy.android.qiet.domain.model.BlockedCallSpam
 import com.motoacademy.android.qiet.domain.usecase.GetAllBlockRulesUseCase
 import com.motoacademy.android.qiet.domain.usecase.SaveBlockedCallUseCase
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,9 +44,14 @@ class SpamCallScreeningService : CallScreeningService() {
             var matchedRule: BlockRuleEntity? = null
 
             getAllBlockRulesUseCase().collect { rules ->
-                val enabledRules = rules.filter { it.isEnabled }
+                val enabledRules = rules.filter { it.isActiveNow() }
 
                 for (rule in enabledRules) {
+                    Log.d("SpamBlocker", "🔍 Verificando regra: ${rule.ruleName}")
+                    rule.interval?.daysOfWeek
+                    rule.interval?.startTime
+                    rule.interval?.endTime
+
                     val contactMatch = rule.blockedContacts.any {
                         it.phoneNumber == phoneNumber
                     }
@@ -111,3 +118,30 @@ class SpamCallScreeningService : CallScreeningService() {
     }
 }
 
+fun BlockRuleEntity.isActiveNow(
+    now: ZonedDateTime = ZonedDateTime.now()
+): Boolean {
+    if (isEnabled.not()) return false
+    val interval = interval ?: return false
+
+    val today = now.dayOfWeek.toAppDayOfWeek()
+    val currentTime = now.toLocalTime().toString()
+
+    // 1️⃣ valida dia da semana
+    if (
+        interval.daysOfWeek.isNullOrEmpty() ||
+        today !in interval.daysOfWeek
+    ) return false
+
+    val start = interval.startTime
+    val end = interval.endTime
+
+    // 2️⃣ valida horário
+    return if (start <= end) {
+        // intervalo normal (ex: 08:00 - 18:00)
+        currentTime in start..end
+    } else {
+        // intervalo cruza meia-noite (ex: 22:00 - 06:00)
+        currentTime >= start || currentTime <= end
+    }
+}
